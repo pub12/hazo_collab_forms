@@ -1,0 +1,195 @@
+{
+    "group_name": "Income",
+    "accept_files": true,
+    "field_list": [
+      {
+        "id": "income_section",
+        "label": "Income Section",
+        "field_type": "group",
+        "description": "Details of income you received between 1 July 2024 and 30 June 2025.",
+        "accept_files": true,
+        "sub_fields": [
+          {
+            "id": "income_1_salary_or_wages",
+            "label": "Income 1 - Salary or Wages",
+            "field_type": "group",
+            "description": "Income earned from employment as salary, wages, and other payments.",
+            "accept_files": true,
+            "sub_fields": [
+              {
+                "id": "main_occupation",
+                "label": "Main Occupation",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "Your main occupation relating to your salary and wages.",
+                "input_type": "alpha",
+                "accept_files": false,
+                "input_format": {
+                  "format_guide": "Enter occupation title, up to 30 characters",
+                  "text_max_len": 30
+                }
+              },
+              {
+                "id": "salary_or_wages_tax_withheld",
+                "label": "Tax Withheld from Salary/Wages (CS code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "Total tax withheld from your salary or wages (CS code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              },
+              {
+                "id": "salary_or_wages_income",
+                "label": "Total Salary/Wages Income (CS code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "Total income from salary or wages (CS code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              }
+            ]
+          },
+          {
+            "id": "income_10_gross_interest",
+            "label": "Income 10 - Gross Interest",
+            "field_type": "group",
+            "description": "Gross interest received from banks, building societies, credit unions, and other financial institutions.",
+            "accept_files": true,
+            "sub_fields": [
+              {
+                "id": "gross_interest_income",
+                "label": "Gross Interest Income (X code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "The total amount of gross interest income (X code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              },
+              {
+                "id": "gross_interest_tfn_withheld_m",
+                "label": "TFN Amounts Withheld (M code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "Amounts withheld because you did not provide your TFN (M code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              }
+            ]
+          },
+          {
+            "id": "income_11_dividends",
+            "label": "Income 11 - Dividends",
+            "field_type": "group",
+            "description": "Dividends and distributions received from Australian companies and managed funds.",
+            "accept_files": true,
+            "sub_fields": [
+              {
+                "id": "dividends_unfranked_amount_ss",
+                "label": "Unfranked Amount (SS code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "The unfranked portion of the dividend income (SS code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              },
+              {
+                "id": "dividends_franked_amount_ts",
+                "label": "Franked Amount (TS code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "The franked portion of the dividend income (TS code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              },
+              {
+                "id": "dividends_franking_credit_us",
+                "label": "Franking Credit (US code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "The franking credit attached to the franked dividends (US code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              },
+              {
+                "id": "dividends_tfn_withheld_v",
+                "label": "TFN Amounts Withheld (Dividends) (V code)",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "Amounts withheld because you did not provide your TFN (V code).",
+                "input_type": "numeric",
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Total amount in whole dollars",
+                  "num_min": 0
+                }
+              }
+            ]
+          },
+          {
+            "id": "total_tax_withheld",
+            "label": "Total Tax Withheld (Overall)",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "The total of all tax withheld amounts (from Q1-Q8, Q10, Q11, etc.).",
+            "input_type": "numeric",
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "Total amount in whole dollars",
+              "num_min": 0
+            }
+          },
+          {
+            "id": "total_income_or_loss",
+            "label": "Total Income or Loss (X code)",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "The total of all income amounts (and deduction of any loss amount) from the income section (X code).",
+            "input_type": "numeric",
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "Total amount in whole dollars (can be negative/loss)"
+            }
+          }
+        ]
+      }
+    ]
+  }

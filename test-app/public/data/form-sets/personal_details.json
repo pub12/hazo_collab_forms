@@ -1,0 +1,668 @@
+{
+  "group_name": "Personal Details",
+  "accept_files": false,
+  "field_list": [
+    {
+      "id": "your_name_details",
+      "label": "Your Name Details",
+      "field_type": "group",
+      "description": "Your full name as registered with the ATO.",
+      "accept_files": false,
+      "sub_fields": [
+        {
+          "id": "title",
+          "label": "Title",
+          "component_type": "HazoCollabFormCombo",
+          "value": "",
+          "field_type": "field",
+          "description": "Your preferred title.",
+          "input_type": "combo",
+          "input_width":"auto",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Select one or more titles"
+          },
+          "input_options": [
+            {
+              "label": "Mr",
+              "value": "Mr"
+            },
+            {
+              "label": "Mrs",
+              "value": "Mrs"
+            },
+            {
+              "label": "Miss",
+              "value": "Miss"
+            },
+            {
+              "label": "Ms",
+              "value": "Ms"
+            },
+            {
+              "label": "Other",
+              "value": "Other"
+            }
+          ]
+        },
+        {
+          "id": "family_name",
+          "label": "Family Name (Surname)",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Your family name (surname).",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter text, up to 40 characters",
+            "text_max_len": 40
+          }
+        },
+        {
+          "id": "first_given_name",
+          "label": "First Given Name",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Your first given name.",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter text, up to 30 characters",
+            "text_max_len": 30
+          }
+        },
+        {
+          "id": "other_given_names",
+          "label": "Other Given Name(s)",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Any other given names.",
+          "input_type": "alpha",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter text, up to 30 characters",
+            "text_max_len": 30
+          }
+        },
+        {
+          "id": "name_changed_since_last_return",
+          "label": "Has any part of your name changed since your last tax return?",
+          "component_type": "HazoCollabFormRadio",
+          "value": "",
+          "field_type": "field",
+          "description": "Indicate if any part of your name has changed since your last tax return.",
+          "input_type": "alpha",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Select No or Yes"
+          },
+          "input_options": [
+            {
+              "label": "No",
+              "value": "No"
+            },
+            {
+              "label": "Yes",
+              "value": "Yes"
+            }
+          ]
+        },
+        {
+          "id": "previous_name_details",
+          "label": "Previous Name Details",
+          "field_type": "group",
+          "description": "Your previous name details, as they appeared on your last tax return or identification.",
+          "dependency": "name_changed_since_last_return:Yes",
+          "accept_files": true,
+          "sub_fields": [
+            {
+              "id": "previous_family_name",
+              "label": "Previous Family Name (Surname)",
+              "component_type": "HazoCollabFormInputbox",
+              "value": "",
+              "field_type": "field",
+              "description": "Your family name (surname) as previously registered.",
+              "input_type": "alpha",
+              "required": true,
+              "accept_files": false,
+              "input_format": {
+                "format_guide": "Enter text, up to 40 characters",
+                "text_max_len": 40
+              }
+            },
+            {
+              "id": "previous_first_given_name",
+              "label": "Previous First Given Name",
+              "component_type": "HazoCollabFormInputbox",
+              "value": "",
+              "field_type": "field",
+              "description": "Your first given name as previously registered.",
+              "input_type": "alpha",
+              "required": true,
+              "accept_files": false,
+              "input_format": {
+                "format_guide": "Enter text, up to 30 characters",
+                "text_max_len": 30
+              }
+            },
+            {
+              "id": "previous_other_given_names",
+              "label": "Previous Other Given Name(s)",
+              "component_type": "HazoCollabFormInputbox",
+              "value": "",
+              "field_type": "field",
+              "description": "Any other given names as previously registered.",
+              "input_type": "alpha",
+              "required": false,
+              "accept_files": false,
+              "input_format": {
+                "format_guide": "Enter text, up to 30 characters",
+                "text_max_len": 30
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "postal_address",
+      "label": "Postal Address",
+      "field_type": "group",
+      "description": "The address where you wish to receive your mail from the ATO.",
+      "accept_files": false,
+      "sub_fields": [
+        {
+          "id": "postal_address_line_1",
+          "label": "Address Line 1",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Street address line 1 (not including suburb/town).",
+          "input_type": "mixed",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter street address, up to 50 characters",
+            "text_max_len": 50
+          }
+        },
+        {
+          "id": "postal_suburb_town_locality",
+          "label": "Suburb/Town/Locality",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Suburb, town, or locality for your postal address.",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter suburb/town/locality, up to 30 characters",
+            "text_max_len": 30
+          }
+        },
+        {
+          "id": "postal_state_territory",
+          "label": "State/Territory",
+          "component_type": "HazoCollabFormCombo",
+          "value": "",
+          "field_type": "field",
+          "description": "State or territory for your postal address.",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_options": [
+            {
+              "label": "ACT - Australian Capital Territory",
+              "value": "ACT"
+            },
+            {
+              "label": "NSW - New South Wales",
+              "value": "NSW"
+            },
+            {
+              "label": "NT - Northern Territory",
+              "value": "NT"
+            },
+            {
+              "label": "QLD - Queensland",
+              "value": "QLD"
+            },
+            {
+              "label": "SA - South Australia",
+              "value": "SA"
+            },
+            {
+              "label": "TAS - Tasmania",
+              "value": "TAS"
+            },
+            {
+              "label": "VIC - Victoria",
+              "value": "VIC"
+            },
+            {
+              "label": "WA - Western Australia",
+              "value": "WA"
+            },
+            {
+              "label": "Other/Overseas",
+              "value": "OVS"
+            }
+          ]
+        },
+        {
+          "id": "postal_postcode",
+          "label": "Postcode",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Postcode for your postal address.",
+          "input_type": "numeric",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "4 digit postcode",
+            "text_min_len": 4,
+            "text_max_len": 4,
+            "regex": "^[0-9]{4}$"
+          }
+        },
+        {
+          "id": "postal_country_if_not_australia",
+          "label": "Country (if not Australia)",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Country of your postal address if not Australia.",
+          "input_type": "alpha",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter country name, up to 30 characters",
+            "text_max_len": 30
+          }
+        },
+        {
+          "id": "postal_address_changed",
+          "label": "Has this address changed since completing your last tax return?",
+          "component_type": "HazoCollabFormRadio",
+          "value": "",
+          "field_type": "field",
+          "description": "Indicate if your postal address has changed since your last tax return.",
+          "input_type": "alpha",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Select No or Yes"
+          },
+          "input_options": [
+            {
+              "label": "No",
+              "value": "No"
+            },
+            {
+              "label": "Yes",
+              "value": "Yes"
+            }
+          ]
+        },
+        {
+          "id": "home_address_different_from_postal",
+          "label": "Is your home address different from your postal address?",
+          "component_type": "HazoCollabFormRadio",
+          "value": "",
+          "field_type": "field",
+          "description": "Indicate if your home address is different from your postal address.",
+          "input_type": "alpha",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Select No or Yes"
+          },
+          "input_options": [
+            {
+              "label": "No",
+              "value": "No"
+            },
+            {
+              "label": "Yes",
+              "value": "Yes"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "previous_postal_address",
+      "label": "Previous Postal Address",
+      "field_type": "group",
+      "description": "Your postal address details from your last tax return.",
+      "dependency": "postal_address_changed:Yes",
+      "accept_files": false,
+      "sub_fields": [
+        {
+          "id": "previous_postal_address_line_1",
+          "label": "Address Line 1",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Street address line 1 (not including suburb/town) of your previous address.",
+          "input_type": "mixed",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter street address, up to 50 characters",
+            "text_max_len": 50
+          }
+        },
+        {
+          "id": "previous_postal_suburb_town_locality",
+          "label": "Suburb/Town/Locality",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Suburb, town, or locality for your previous postal address.",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter suburb/town/locality, up to 30 characters",
+            "text_max_len": 30
+          }
+        },
+        {
+          "id": "previous_postal_state_territory",
+          "label": "State/Territory",
+          "component_type": "HazoCollabFormCombo",
+          "value": "",
+          "field_type": "field",
+          "description": "State or territory for your previous postal address.",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_options": [
+            {
+              "label": "ACT - Australian Capital Territory",
+              "value": "ACT"
+            },
+            {
+              "label": "NSW - New South Wales",
+              "value": "NSW"
+            },
+            {
+              "label": "NT - Northern Territory",
+              "value": "NT"
+            },
+            {
+              "label": "QLD - Queensland",
+              "value": "QLD"
+            },
+            {
+              "label": "SA - South Australia",
+              "value": "SA"
+            },
+            {
+              "label": "TAS - Tasmania",
+              "value": "TAS"
+            },
+            {
+              "label": "VIC - Victoria",
+              "value": "VIC"
+            },
+            {
+              "label": "WA - Western Australia",
+              "value": "WA"
+            },
+            {
+              "label": "Other/Overseas",
+              "value": "OVS"
+            }
+          ]
+        },
+        {
+          "id": "previous_postal_postcode",
+          "label": "Postcode",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Postcode for your previous postal address.",
+          "input_type": "numeric",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "4 digit postcode",
+            "text_min_len": 4,
+            "text_max_len": 4,
+            "regex": "^[0-9]{4}$"
+          }
+        }
+      ]
+    },
+    {
+      "id": "home_address",
+      "label": "Home Address",
+      "field_type": "group",
+      "description": "Your residential address, if different from your postal address.",
+      "dependency": "home_address_different_from_postal:Yes",
+      "accept_files": false,
+      "sub_fields": [
+        {
+          "id": "home_address_line_1",
+          "label": "Address Line 1",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Street address line 1 (not including suburb/town).",
+          "input_type": "mixed",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter street address, up to 50 characters",
+            "text_max_len": 50
+          }
+        },
+        {
+          "id": "home_suburb_town_locality",
+          "label": "Suburb/Town/Locality",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Suburb, town, or locality for your home address.",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter suburb/town/locality, up to 30 characters",
+            "text_max_len": 30
+          }
+        },
+        {
+          "id": "home_state_territory",
+          "label": "State/Territory",
+          "component_type": "HazoCollabFormCombo",
+          "value": "",
+          "field_type": "field",
+          "description": "State or territory for your home address.",
+          "input_type": "alpha",
+          "required": true,
+          "accept_files": false,
+          "input_options": [
+            {
+              "label": "ACT - Australian Capital Territory",
+              "value": "ACT"
+            },
+            {
+              "label": "NSW - New South Wales",
+              "value": "NSW"
+            },
+            {
+              "label": "NT - Northern Territory",
+              "value": "NT"
+            },
+            {
+              "label": "QLD - Queensland",
+              "value": "QLD"
+            },
+            {
+              "label": "SA - South Australia",
+              "value": "SA"
+            },
+            {
+              "label": "TAS - Tasmania",
+              "value": "TAS"
+            },
+            {
+              "label": "VIC - Victoria",
+              "value": "VIC"
+            },
+            {
+              "label": "WA - Western Australia",
+              "value": "WA"
+            },
+            {
+              "label": "Other/Overseas",
+              "value": "OVS"
+            }
+          ]
+        },
+        {
+          "id": "home_postcode",
+          "label": "Postcode",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Postcode for your home address.",
+          "input_type": "numeric",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "4 digit postcode",
+            "text_min_len": 4,
+            "text_max_len": 4,
+            "regex": "^[0-9]{4}$"
+          }
+        },
+        {
+          "id": "home_country_if_not_australia",
+          "label": "Country (if not Australia)",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Country of your home address if not Australia.",
+          "input_type": "alpha",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter country name, up to 30 characters",
+            "text_max_len": 30
+          }
+        }
+      ]
+    },
+    {
+      "id": "contact_details",
+      "label": "Contact Details",
+      "field_type": "group",
+      "description": "Your current contact details for correspondence.",
+      "accept_files": false,
+      "sub_fields": [
+        {
+          "id": "daytime_phone_number",
+          "label": "Daytime Phone Number",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Your daytime telephone number (if different from mobile).",
+          "input_type": "numeric",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter phone number, up to 15 digits",
+            "text_max_len": 15
+          }
+        },
+        {
+          "id": "mobile_phone_number",
+          "label": "Mobile Phone Number",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Your mobile phone number.",
+          "input_type": "numeric",
+          "required": true,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter mobile number, usually 10 digits",
+            "text_max_len": 10
+          }
+        },
+        {
+          "id": "email_address",
+          "label": "Email Address",
+          "component_type": "HazoCollabFormInputbox",
+          "value": "",
+          "field_type": "field",
+          "description": "Your email address.",
+          "input_type": "email",
+          "required": false,
+          "accept_files": false,
+          "input_format": {
+            "format_guide": "Enter a valid email address, up to 50 characters",
+            "text_max_len": 50
+          }
+        }
+      ]
+    },
+    {
+      "id": "future_lodgment_status",
+      "label": "Anticipate Future Lodgment?",
+      "component_type": "HazoCollabFormRadio",
+      "value": "",
+      "field_type": "field",
+      "description": "Indicate if you anticipate needing to lodge an Australian tax return in future years.",
+      "input_type": "mixed",
+      "required": false,
+      "accept_files": false,
+      "input_format": {
+        "format_guide": "Select one option"
+      },
+      "input_options": [
+        {
+          "label": "Yes",
+          "value": "Yes"
+        },
+        {
+          "label": "Don't know",
+          "value": "Don't know"
+        },
+        {
+          "label": "No (FINAL TAX RETURN)",
+          "value": "No (FINAL TAX RETURN)"
+        }
+      ]
+    },
+    {
+      "id": "date_of_birth",
+      "label": "Date of Birth (DD/MM/YYYY)",
+      "component_type": "HazoCollabFormDate",
+      "value": "",
+      "field_type": "field",
+      "description": "Your date of birth, used for identification and to determine eligibility for certain tax rules.",
+      "input_type": "date",
+      "required": true,
+      "accept_files": false,
+      "input_format": {
+        "format_guide": "Enter date in DD/MM/YYYY format",
+        "regex": "^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[0-2])/(19|20)\\d{2}$"
+      }
+    }
+  ]
+}

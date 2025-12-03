@@ -1,0 +1,58 @@
+{
+    "group_name": "Banking Details",
+    "accept_files": false,
+    "field_list": [
+      {
+        "id": "electronic_funds_transfer",
+        "label": "Electronic Funds Transfer (EFT) Details",
+        "field_type": "group",
+        "description": "Your financial institution details to receive any tax refund owing to you.",
+        "accept_files": false,
+        "sub_fields": [
+          {
+            "id": "eft_bsb_number",
+            "label": "BSB Number",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "The Bank-State-Branch (BSB) number (must be 6 digits).",
+            "input_type": "numeric",
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "6 digit BSB number",
+              "text_min_len": 6,
+              "text_max_len": 6
+            }
+          },
+          {
+            "id": "eft_account_number",
+            "label": "Account Number",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "Your bank account number.",
+            "input_type": "numeric",
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "Enter account number, up to 20 digits",
+              "text_max_len": 20
+            }
+          },
+          {
+            "id": "eft_account_name",
+            "label": "Account Name",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "The name on the bank account (e.g., JQ Citizen). Do not include account type.",
+            "input_type": "alpha",
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "Enter account name, up to 32 characters",
+              "text_max_len": 32
+            }
+          }
+        ]
+      }
+    ]
+  }

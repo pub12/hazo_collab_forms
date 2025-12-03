@@ -1,0 +1,57 @@
+{
+    "group_name": "Deductions",
+    "accept_files": true,
+    "field_list": [
+      {
+        "id": "deductions_section",
+        "label": "Deduction Section",
+        "field_type": "group",
+        "description": "Deductions you are claiming against your income.",
+        "accept_files": true,
+        "sub_fields": [
+          {
+            "id": "deduction_d1_work_related_car_expenses",
+            "label": "D1 - Work-Related Car Expenses (AS code)",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "Expenses incurred for using your own car for work purposes (AS code).",
+            "input_type": "numeric",
+            "accept_files": true,
+            "input_format": {
+              "format_guide": "Total amount in whole dollars",
+              "num_min": 0
+            }
+          },
+          {
+            "id": "deduction_d9_gifts_or_donations",
+            "label": "D9 - Gifts or Donations (J code)",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "Gifts or contributions of $2 or more to approved deductible gift recipients (DGRs) (J code).",
+            "input_type": "numeric",
+            "accept_files": true,
+            "input_format": {
+              "format_guide": "Total amount in whole dollars",
+              "num_min": 0
+            }
+          },
+          {
+            "id": "total_deductions",
+            "label": "Total Deductions (X code)",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "The sum of amounts at questions D1 to D (X code).",
+            "input_type": "numeric",
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "Total amount in whole dollars",
+              "num_min": 0
+            }
+          }
+        ]
+      }
+    ]
+  }

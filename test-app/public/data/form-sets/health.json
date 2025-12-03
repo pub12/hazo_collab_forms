@@ -1,0 +1,78 @@
+{
+    "group_name": "Health details",
+    "accept_files": false,
+    "field_list": [
+      {
+        "id": "medicare_levy_section",
+        "label": "Medicare Levy Section",
+        "field_type": "group",
+        "description": "Questions to determine your Medicare levy and Medicare levy surcharge obligations.",
+        "accept_files": false,
+        "sub_fields": [
+          {
+            "id": "m1_number_of_dependent_children",
+            "label": "M1 - Number of Dependent Children (Y code)",
+            "component_type": "HazoCollabFormInputbox",
+            "value": "",
+            "field_type": "field",
+            "description": "Number of dependent children and students for family income reduction purposes (Y code).",
+            "input_type": "numeric",
+            "required": false,
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "Enter number of dependants",
+              "num_min": 0
+            }
+          },
+          {
+            "id": "m2_private_hospital_cover_full_year",
+            "label": "M2 - Private Hospital Cover (Full Year)?",
+            "component_type": "HazoCollabFormRadio",
+            "value": "",
+            "field_type": "field",
+            "description": "Were you and all dependants covered by private patient hospital cover for the whole period 1 July 2024 to 30 June 2025?",
+            "input_type": "alpha",
+            "required": true,
+            "accept_files": false,
+            "input_format": {
+              "format_guide": "Select Yes or No"
+            },
+            "input_options": [
+              {
+                "label": "Yes",
+                "value": "Yes"
+              },
+              {
+                "label": "No",
+                "value": "No"
+              }
+            ]
+          },
+          {
+            "id": "m2_private_hospital_cover_details",
+            "label": "M2 - Private Hospital Cover Details",
+            "field_type": "group",
+            "description": "Details required for partial or no private hospital cover during the year, as per your health fund statement.",
+            "dependency": "m2_private_hospital_cover_full_year:No",
+            "accept_files": true,
+            "sub_fields": [
+              {
+                "id": "m2_health_fund_tax_statement_number",
+                "label": "Health Fund Tax Statement Number",
+                "component_type": "HazoCollabFormInputbox",
+                "value": "",
+                "field_type": "field",
+                "description": "The Health Insurance Policy Statement number (A, B, C, or D) provided by your health fund.",
+                "input_type": "mixed",
+                "required": true,
+                "accept_files": true,
+                "input_format": {
+                  "format_guide": "Enter statement number (e.g., A, B, C, or D)"
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
