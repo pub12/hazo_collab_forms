@@ -1,101 +1,160 @@
 # Hazo Collab Forms - Setup Guide
 
-This guide will help you set up the `hazo_collab_forms` package in your Next.js application.
+Complete setup guide for integrating `hazo_collab_forms` into your Next.js application.
 
-## Quick Start (5 Minutes)
+---
 
-For experienced developers who want to get started quickly:
+## Quick Start (Experienced Developers)
 
 ```bash
-# 1. Install the package and all peer dependencies
-npm install hazo_collab_forms react react-dom react-icons sonner \
-  @radix-ui/react-dialog @radix-ui/react-label \
-  hazo_chat hazo_ui hazo_auth hazo_config lucide-react
+# 1. Install everything
+npm install hazo_collab_forms react react-dom react-icons sonner lucide-react \
+  @radix-ui/react-dialog @radix-ui/react-label hazo_chat hazo_ui hazo_auth hazo_config
 
-# 2. Install all required shadcn/ui components
+# 2. Initialize shadcn (if not done) and install components
+npx shadcn@latest init
 npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
 
-# 3. Copy config templates (run from your project root)
+# 3. Copy config templates
 cp node_modules/hazo_collab_forms/templates/*.ini ./
 
-# 4. Verify your setup
+# 4. Verify setup
 npx hazo-collab-forms-verify
 ```
 
-Then add to your `next.config.js`:
-
-```javascript
-const nextConfig = {
-  transpilePackages: ['hazo_collab_forms'],
-};
-module.exports = nextConfig;
-```
-
-And add to your `tailwind.config.ts` content array:
-
-```typescript
-"./node_modules/hazo_collab_forms/**/*.{js,ts,jsx,tsx}",
-```
+Then configure Next.js and Tailwind (see Steps 4-5 below).
 
 ---
 
-## Full Setup Guide
+## Prerequisites
 
-### Prerequisites
-
-- Node.js 18+
-- npm or yarn
-- Next.js 14+ project with TypeScript
+- [ ] Node.js 18+
+- [ ] Next.js 14+ with TypeScript
+- [ ] Tailwind CSS configured
 
 ---
 
-### Step 1: Install Dependencies
-
-#### Main Package
+## Step 1: Install the Package
 
 ```bash
 npm install hazo_collab_forms
 ```
 
-#### Peer Dependencies
+---
+
+## Step 2: Install Peer Dependencies
+
+### 2a. Core Dependencies
 
 ```bash
-npm install react react-dom react-icons sonner
+# React (skip if already installed)
+npm install react react-dom
+
+# UI Libraries
+npm install react-icons sonner lucide-react
+
+# Radix UI Primitives
 npm install @radix-ui/react-dialog @radix-ui/react-label
-npm install hazo_chat hazo_ui hazo_auth hazo_config
-npm install lucide-react
 ```
 
-> **Note**: `lucide-react` is required for the Combo and Date picker icons. Add this to your package.json overrides if you encounter version conflicts:
-> ```json
-> "overrides": {
->   "lucide-react": "^0.553.0"
-> }
-> ```
+### 2b. Hazo Ecosystem Packages
 
----
-
-### Step 2: Install shadcn/ui Components
+These are required for the chat collaboration features:
 
 ```bash
-# Core components (required for all form fields)
-npx shadcn@latest add button label dialog tooltip sonner
+npm install hazo_chat hazo_ui hazo_auth hazo_config
+```
 
-# For Combo/dropdown fields
-npx shadcn@latest add popover command
+### One-Line Install (All Dependencies)
 
-# For Date picker fields
-npx shadcn@latest add calendar
-
-# Optional but recommended
-npx shadcn@latest add separator card
+```bash
+npm install hazo_collab_forms react react-dom react-icons sonner lucide-react \
+  @radix-ui/react-dialog @radix-ui/react-label hazo_chat hazo_ui hazo_auth hazo_config
 ```
 
 ---
 
-### Step 3: Configure Next.js
+## Step 3: Install shadcn/ui Components
 
-Add to your `next.config.js`:
+### 3a. Initialize shadcn/ui (First Time Only)
+
+If you haven't set up shadcn/ui in your project:
+
+```bash
+npx shadcn@latest init
+```
+
+Follow the prompts to configure your project.
+
+### 3b. Install Required Components
+
+**Core Components** (required for all form fields):
+
+```bash
+npx shadcn@latest add button
+npx shadcn@latest add label
+npx shadcn@latest add dialog
+npx shadcn@latest add tooltip
+npx shadcn@latest add sonner
+```
+
+**For HazoCollabFormCombo** (dropdown/select with search):
+
+```bash
+npx shadcn@latest add popover
+npx shadcn@latest add command
+```
+
+**For HazoCollabFormDate** (date picker):
+
+```bash
+npx shadcn@latest add calendar
+```
+
+**Optional but Recommended**:
+
+```bash
+npx shadcn@latest add separator
+npx shadcn@latest add card
+```
+
+### One-Line Install (All shadcn Components)
+
+```bash
+npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
+```
+
+### Component Requirements by Form Field
+
+| Form Component | Required shadcn Components |
+|----------------|---------------------------|
+| `HazoCollabFormInputbox` | button, label, dialog, tooltip, sonner |
+| `HazoCollabFormTextArea` | button, label, dialog, tooltip, sonner |
+| `HazoCollabFormCheckbox` | button, label, dialog, tooltip, sonner |
+| `HazoCollabFormRadio` | button, label, dialog, tooltip, sonner |
+| `HazoCollabFormCombo` | + popover, command |
+| `HazoCollabFormDate` | + calendar |
+| `HazoCollabFormGroup` | button, label, dialog, tooltip, sonner |
+| `HazoCollabFormSet` | all of the above |
+
+---
+
+## Step 4: Configure Next.js
+
+Add to your `next.config.js` (or `next.config.mjs`):
+
+```javascript
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  transpilePackages: ['hazo_collab_forms'],
+};
+
+module.exports = nextConfig;
+```
+
+### Advanced Configuration (if needed)
+
+If you encounter module resolution issues:
 
 ```javascript
 /** @type {import('next').NextConfig} */
@@ -117,9 +176,9 @@ module.exports = nextConfig;
 
 ---
 
-### Step 4: Configure Tailwind CSS
+## Step 5: Configure Tailwind CSS
 
-Add to your `tailwind.config.ts` content paths:
+Add the package to your `tailwind.config.ts` content paths:
 
 ```typescript
 import type { Config } from "tailwindcss";
@@ -128,6 +187,7 @@ const config: Config = {
   content: [
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    // Add this line:
     "./node_modules/hazo_collab_forms/**/*.{js,ts,jsx,tsx}",
   ],
   // ... rest of your config
@@ -138,11 +198,17 @@ export default config;
 
 ---
 
-### Step 5: Create Configuration Files
+## Step 6: Create Configuration Files
 
-#### hazo_collab_forms_config.ini
+### Option A: Copy Templates (Recommended)
 
-Create in your project root:
+```bash
+cp node_modules/hazo_collab_forms/templates/*.ini ./
+```
+
+### Option B: Create Manually
+
+**hazo_collab_forms_config.ini** (in project root):
 
 ```ini
 [logging]
@@ -158,7 +224,7 @@ field_background_color=bg-muted
 default_testing_recipient_id=[]
 ```
 
-#### hazo_chat_config.ini
+**hazo_chat_config.ini** (in project root):
 
 ```ini
 [api]
@@ -172,36 +238,53 @@ polling_interval=5000
 per_page=20
 ```
 
-#### hazo_auth_config.ini
+**hazo_auth_config.ini** (in project root):
 
-See the [hazo_auth documentation](https://github.com/pub12/hazo_auth) for configuration details.
+See [hazo_auth documentation](https://github.com/pub12/hazo_auth) for configuration options.
 
 ---
 
-### Step 6: Create API Routes
+## Step 7: Set Up API Routes (For Chat)
 
-#### Chat Messages API
-
-Create `app/api/hazo_chat/messages/route.ts`:
+Create the chat API endpoint at `app/api/hazo_chat/messages/route.ts`:
 
 ```typescript
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(request: NextRequest) {
-  // Implement your chat messages API
+  // Implement chat message retrieval
+  // Query params: reference_id, reference_type
   return NextResponse.json({ messages: [] });
 }
 
 export async function POST(request: NextRequest) {
+  // Implement chat message creation
   const body = await request.json();
-  // Save message and return
+  // Save message to your database
   return NextResponse.json({ success: true });
 }
 ```
 
 ---
 
-### Step 7: Use Components
+## Step 8: Verify Installation
+
+Run the verification tool:
+
+```bash
+npx hazo-collab-forms-verify
+```
+
+This checks:
+- [ ] All peer dependencies installed
+- [ ] Config files exist
+- [ ] Next.js configured correctly
+- [ ] Tailwind configured correctly
+- [ ] shadcn components installed
+
+---
+
+## Step 9: Start Using Components
 
 ```typescript
 'use client';
@@ -210,13 +293,13 @@ import { HazoCollabFormInputbox } from 'hazo_collab_forms';
 import { useState } from 'react';
 
 export default function MyForm() {
-  const [value, setValue] = useState('');
+  const [name, setName] = useState('');
 
   return (
     <HazoCollabFormInputbox
       label="Your Name"
-      value={value}
-      onChange={setValue}
+      value={name}
+      onChange={setName}
       field_data_id="user-name"
       field_name="User Name"
       hazo_chat_receiver_user_id="recipient-user-id"
@@ -225,54 +308,77 @@ export default function MyForm() {
 }
 ```
 
-### Available Components
-
-| Component | Description |
-|-----------|-------------|
-| `HazoCollabFormInputbox` | Text input with validation |
-| `HazoCollabFormTextArea` | Multi-line text input |
-| `HazoCollabFormCheckbox` | Boolean toggle |
-| `HazoCollabFormCombo` | Dropdown select with search |
-| `HazoCollabFormRadio` | Radio button group |
-| `HazoCollabFormDate` | Date or date-range picker |
-| `HazoCollabFormGroup` | Field grouping container |
-| `HazoCollabFormSet` | Complete form with field arrays |
-
 ---
 
 ## Troubleshooting
 
-### Components not rendering
+### Components Not Rendering
 
-1. Check all peer dependencies are installed
-2. Verify shadcn components are installed (`npx shadcn@latest add ...`)
-3. Check browser console for import errors
-4. Ensure `transpilePackages` includes `hazo_collab_forms`
+1. Check browser console for import errors
+2. Verify shadcn components are installed:
+   ```bash
+   ls components/ui/
+   ```
+3. Ensure `transpilePackages` includes `hazo_collab_forms`
+4. Run verification: `npx hazo-collab-forms-verify`
 
-### Chat not working
+### Chat Not Working
 
-1. Verify `hazo_chat` package is installed and configured
-2. Check API routes exist at `/api/hazo_chat/messages`
-3. Ensure `hazo_chat_receiver_user_id` prop is provided
-4. Verify `hazo_chat_config.ini` exists
+1. Verify `hazo_chat` is installed: `npm list hazo_chat`
+2. Check `hazo_chat_config.ini` exists in project root
+3. Ensure API routes exist at `/api/hazo_chat/messages`
+4. Verify `hazo_chat_receiver_user_id` prop is provided
 
-### Styling issues
+### Styling Issues
 
-1. Ensure `hazo_collab_forms` is in Tailwind content paths
-2. Check shadcn components are styled correctly
-3. Look for CSS conflicts in browser dev tools
+1. Verify package path in Tailwind content:
+   ```typescript
+   "./node_modules/hazo_collab_forms/**/*.{js,ts,jsx,tsx}"
+   ```
+2. Restart dev server after changing Tailwind config
+3. Check for CSS conflicts in browser dev tools
 
-### TypeScript errors
+### TypeScript Errors
 
-1. Verify TypeScript 5.3+
-2. Check `@types/react` and `@types/react-dom` are installed
-3. Ensure module resolution is set correctly in tsconfig.json
+1. Verify TypeScript 5.3+: `npx tsc --version`
+2. Ensure `@types/react` and `@types/react-dom` are installed
+3. Check module resolution in `tsconfig.json`
 
-### Build errors
+### lucide-react Version Conflicts
 
-1. Run `npm run clean && npm run build`
-2. Check for missing dependencies with `npx hazo-collab-forms-verify`
-3. Verify ES module exports use `.js` extensions
+Add to your `package.json`:
+
+```json
+"overrides": {
+  "lucide-react": "^0.553.0"
+}
+```
+
+Then run `npm install`.
+
+### Build Errors
+
+1. Clean and rebuild:
+   ```bash
+   rm -rf .next node_modules/.cache
+   npm run build
+   ```
+2. Check for missing shadcn components in error messages
+3. Verify ES module imports use correct paths
+
+---
+
+## Checklist Summary
+
+- [ ] Package installed (`npm install hazo_collab_forms`)
+- [ ] Peer dependencies installed
+- [ ] shadcn/ui initialized
+- [ ] Required shadcn components installed
+- [ ] `next.config.js` configured with `transpilePackages`
+- [ ] `tailwind.config.ts` includes package path
+- [ ] Config files created (`.ini` files)
+- [ ] API routes set up (for chat)
+- [ ] Verification passed (`npx hazo-collab-forms-verify`)
 
 ---
 
@@ -282,7 +388,3 @@ export default function MyForm() {
 - [shadcn/ui Documentation](https://ui.shadcn.com)
 - [Hazo Chat Documentation](https://github.com/pub12/hazo_chat)
 - [Hazo Auth Documentation](https://github.com/pub12/hazo_auth)
-
----
-
-**Note:** This package uses ES modules. Ensure your project is configured to handle ES module imports correctly.

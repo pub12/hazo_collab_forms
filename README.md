@@ -5,25 +5,55 @@
 
 React form components with integrated chat collaboration, built for Next.js with TypeScript and Tailwind CSS.
 
-## Quick Install
+## Installation
+
+### Step 1: Install the Package
 
 ```bash
-# Install package and peer dependencies
-npm install hazo_collab_forms react react-dom react-icons sonner \
-  @radix-ui/react-dialog @radix-ui/react-label \
-  hazo_chat hazo_ui hazo_auth hazo_config lucide-react
-
-# Install required shadcn/ui components
-npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
-
-# Copy config templates
-cp node_modules/hazo_collab_forms/templates/*.ini ./
-
-# Verify setup
-npx hazo-collab-forms-verify
+npm install hazo_collab_forms
 ```
 
-Add to `next.config.js`:
+### Step 2: Install Peer Dependencies
+
+```bash
+# Core React dependencies (skip if already installed)
+npm install react react-dom
+
+# UI dependencies
+npm install react-icons sonner lucide-react
+npm install @radix-ui/react-dialog @radix-ui/react-label
+
+# Hazo ecosystem packages (required for chat functionality)
+npm install hazo_chat hazo_ui hazo_auth hazo_config
+```
+
+### Step 3: Install shadcn/ui Components
+
+This package requires shadcn/ui components. If you haven't initialized shadcn/ui yet:
+
+```bash
+npx shadcn@latest init
+```
+
+Then install the required components:
+
+```bash
+# Core components (required for all form fields)
+npx shadcn@latest add button label dialog tooltip sonner
+
+# For HazoCollabFormCombo (dropdown/select)
+npx shadcn@latest add popover command
+
+# For HazoCollabFormDate (date picker)
+npx shadcn@latest add calendar
+
+# Optional but recommended
+npx shadcn@latest add separator card
+```
+
+### Step 4: Configure Next.js
+
+Add to your `next.config.js`:
 
 ```javascript
 const nextConfig = {
@@ -32,13 +62,56 @@ const nextConfig = {
 module.exports = nextConfig;
 ```
 
-Add to `tailwind.config.ts` content:
+### Step 5: Configure Tailwind CSS
+
+Add to `tailwind.config.ts` content array:
 
 ```typescript
-"./node_modules/hazo_collab_forms/**/*.{js,ts,jsx,tsx}",
+content: [
+  // ... your existing paths
+  "./node_modules/hazo_collab_forms/**/*.{js,ts,jsx,tsx}",
+],
 ```
 
-See [SETUP_CHECKLIST.md](./SETUP_CHECKLIST.md) for detailed setup instructions.
+### Step 6: Create Config Files
+
+Copy the template config files to your project root:
+
+```bash
+cp node_modules/hazo_collab_forms/templates/*.ini ./
+```
+
+This creates:
+- `hazo_collab_forms_config.ini` - Main package config
+- `hazo_chat_config.ini` - Chat functionality config
+- `hazo_auth_config.ini` - Authentication config
+
+### Step 7: Verify Installation
+
+```bash
+npx hazo-collab-forms-verify
+```
+
+This checks all dependencies, config files, and shadcn components are properly installed.
+
+---
+
+## Quick Reference
+
+### One-Line Install (All Dependencies)
+
+```bash
+npm install hazo_collab_forms react react-dom react-icons sonner lucide-react \
+  @radix-ui/react-dialog @radix-ui/react-label hazo_chat hazo_ui hazo_auth hazo_config
+```
+
+### One-Line shadcn Install (All Components)
+
+```bash
+npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
+```
+
+---
 
 ## Usage
 
@@ -66,16 +139,16 @@ export default function MyForm() {
 
 ## Components
 
-| Component | Description |
-|-----------|-------------|
-| `HazoCollabFormInputbox` | Text input with validation |
-| `HazoCollabFormTextArea` | Multi-line text input |
-| `HazoCollabFormCheckbox` | Boolean toggle |
-| `HazoCollabFormCombo` | Dropdown select with search |
-| `HazoCollabFormRadio` | Radio button group |
-| `HazoCollabFormDate` | Date or date-range picker |
-| `HazoCollabFormGroup` | Field grouping container |
-| `HazoCollabFormSet` | Complete form with field arrays |
+| Component | Description | Required shadcn |
+|-----------|-------------|-----------------|
+| `HazoCollabFormInputbox` | Text input with validation | button, label, dialog |
+| `HazoCollabFormTextArea` | Multi-line text input | button, label, dialog |
+| `HazoCollabFormCheckbox` | Boolean toggle | button, label, dialog |
+| `HazoCollabFormCombo` | Dropdown select with search | + popover, command |
+| `HazoCollabFormRadio` | Radio button group | button, label, dialog |
+| `HazoCollabFormDate` | Date or date-range picker | + calendar |
+| `HazoCollabFormGroup` | Field grouping container | button, label, dialog |
+| `HazoCollabFormSet` | Complete form with field arrays | all components |
 
 ## Import Paths
 
@@ -93,17 +166,35 @@ import { cn, use_collab_chat } from 'hazo_collab_forms/utils';
 import { get_config } from 'hazo_collab_forms/lib';
 ```
 
-## Known Issues
+## Troubleshooting
 
 ### lucide-react Version Conflicts
 
-Different Hazo packages require different versions of `lucide-react`. Add this to your `package.json` if you encounter conflicts:
+Different Hazo packages require different versions of `lucide-react`. Add this to your `package.json`:
 
 ```json
 "overrides": {
   "lucide-react": "^0.553.0"
 }
 ```
+
+### Missing shadcn Components
+
+If you see errors about missing components, install the specific shadcn component:
+
+```bash
+npx shadcn@latest add [component-name]
+```
+
+### Verify Your Setup
+
+Run the verification tool to check for common issues:
+
+```bash
+npx hazo-collab-forms-verify
+```
+
+See [SETUP_CHECKLIST.md](./SETUP_CHECKLIST.md) for detailed troubleshooting.
 
 ---
 
