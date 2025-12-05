@@ -1,114 +1,143 @@
 # Hazo Collab Forms
 
-Collaboration form elements package built with ES modules.
+[![npm version](https://img.shields.io/npm/v/hazo_collab_forms.svg)](https://www.npmjs.com/package/hazo_collab_forms)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-## Package Structure
+React form components with integrated chat collaboration, built for Next.js with TypeScript and Tailwind CSS.
+
+## Quick Install
+
+```bash
+# Install package and peer dependencies
+npm install hazo_collab_forms react react-dom react-icons sonner \
+  @radix-ui/react-dialog @radix-ui/react-label \
+  hazo_chat hazo_ui hazo_auth hazo_config lucide-react
+
+# Install required shadcn/ui components
+npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
+
+# Copy config templates
+cp node_modules/hazo_collab_forms/templates/*.ini ./
+
+# Verify setup
+npx hazo-collab-forms-verify
+```
+
+Add to `next.config.js`:
+
+```javascript
+const nextConfig = {
+  transpilePackages: ['hazo_collab_forms'],
+};
+module.exports = nextConfig;
+```
+
+Add to `tailwind.config.ts` content:
+
+```typescript
+"./node_modules/hazo_collab_forms/**/*.{js,ts,jsx,tsx}",
+```
+
+See [SETUP_CHECKLIST.md](./SETUP_CHECKLIST.md) for detailed setup instructions.
+
+## Usage
+
+```typescript
+'use client';
+
+import { HazoCollabFormInputbox } from 'hazo_collab_forms';
+import { useState } from 'react';
+
+export default function MyForm() {
+  const [value, setValue] = useState('');
+
+  return (
+    <HazoCollabFormInputbox
+      label="Your Name"
+      value={value}
+      onChange={setValue}
+      field_data_id="user-name"
+      field_name="User Name"
+      hazo_chat_receiver_user_id="recipient-user-id"
+    />
+  );
+}
+```
+
+## Components
+
+| Component | Description |
+|-----------|-------------|
+| `HazoCollabFormInputbox` | Text input with validation |
+| `HazoCollabFormTextArea` | Multi-line text input |
+| `HazoCollabFormCheckbox` | Boolean toggle |
+| `HazoCollabFormCombo` | Dropdown select with search |
+| `HazoCollabFormRadio` | Radio button group |
+| `HazoCollabFormDate` | Date or date-range picker |
+| `HazoCollabFormGroup` | Field grouping container |
+| `HazoCollabFormSet` | Complete form with field arrays |
+
+## Import Paths
+
+```typescript
+// Default: All client-safe components and utilities
+import { HazoCollabFormInputbox, cn } from 'hazo_collab_forms';
+
+// Components only
+import { HazoCollabFormInputbox } from 'hazo_collab_forms/components';
+
+// Utilities only
+import { cn, use_collab_chat } from 'hazo_collab_forms/utils';
+
+// Server-only (config functions)
+import { get_config } from 'hazo_collab_forms/lib';
+```
+
+## Known Issues
+
+### lucide-react Version Conflicts
+
+Different Hazo packages require different versions of `lucide-react`. Add this to your `package.json` if you encounter conflicts:
+
+```json
+"overrides": {
+  "lucide-react": "^0.553.0"
+}
+```
+
+---
+
+## Development
+
+### Package Structure
 
 - **Root**: ES module npm package
-- **test-app**: Next.js application for testing the package
+- **test-app**: Next.js application for testing
 
-## Setup
-
-### Install Dependencies
+### Commands
 
 ```bash
-npm install
+npm run build          # Build the package
+npm run dev:package    # Watch mode for development
+npm run dev:test-app   # Build and run test app
+npm run build:test-app # Build for production
+npm run clean          # Remove dist directory
 ```
-
-This will install dependencies for both the root package and the test-app workspace.
-
-### Build Package
-
-```bash
-npm run build
-```
-
-This compiles TypeScript to the `dist/` directory with proper ES module exports using `.js` extensions.
-
-### Development
-
-#### Watch Mode for Package
-
-```bash
-npm run dev:package
-```
-
-This watches for changes and rebuilds the package automatically.
-
-#### Run Test App
-
-```bash
-npm run dev:test-app
-```
-
-This builds the package and starts the Next.js development server.
-
-#### Build Test App
-
-```bash
-npm run build:test-app
-```
-
-This builds both the package and the test-app for production.
-
-## Package Configuration
 
 ### TypeScript Configuration
 
-- **tsconfig.json**: Development configuration with bundler module resolution
-- **tsconfig.build.json**: Build configuration with Node16 module resolution for proper ES module output
+- `tsconfig.json`: Development (bundler module resolution)
+- `tsconfig.build.json`: Build (Node16 for ES module output)
 
 ### ES Module Exports
 
-All export statements use explicit `.js` extensions as required for ES modules:
+All exports use explicit `.js` extensions as required for ES modules:
 
 ```typescript
 export * from './lib/index.js';
 export * from './components/index.js';
 ```
 
-### Package Exports
+## License
 
-The package.json includes proper exports:
-
-```json
-{
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  }
-}
-```
-
-## Next.js Workspace Integration
-
-The test-app is configured to work with the workspace package:
-
-1. **webpack alias**: Points `hazo_collab_forms` to the parent `dist/` directory
-2. **module resolution**: Checks both parent and local node_modules
-3. **transpilePackages**: Includes `hazo_collab_forms` in Next.js transpilation
-
-## Configuration File
-
-The package uses `hazo_collab_forms_config.ini` for configuration. The config file should be placed in:
-
-1. The consuming application's root directory (preferred)
-2. The package root directory (fallback for development)
-
-## Scripts
-
-- `npm run build` - Build the package
-- `npm run dev:package` - Watch mode for package development
-- `npm run dev:test-app` - Build and run test app in dev mode
-- `npm run build:test-app` - Build package and test app for production
-- `npm run clean` - Remove dist directory
-
-## Module Resolution Verification
-
-After building, verify that all exports in `dist/index.js` use `.js` extensions. The test-app successfully imports and uses the package, confirming proper ES module resolution.
-
-
-
-
+MIT

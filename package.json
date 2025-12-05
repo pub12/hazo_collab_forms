@@ -14,14 +14,22 @@
       "import": "./dist/lib/index.js",
       "types": "./dist/lib/index.d.ts"
     },
-    "./server": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
+    "./components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js",
+      "types": "./dist/utils/index.d.ts"
     }
   },
   "files": [
-    "dist"
+    "dist",
+    "templates"
   ],
+  "bin": {
+    "hazo-collab-forms-verify": "./dist/bin/verify-setup.js"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "dev:package": "tsc -p tsconfig.build.json --watch",
@@ -51,7 +59,6 @@
     "@types/node": "^20.11.0",
     "@types/react": "^18.2.48",
     "@types/react-dom": "^18.2.18",
-    "hazo_chat": "^2.0.16",
     "typescript": "^5.3.3"
   },
   "dependencies": {
@@ -65,12 +72,17 @@
   "peerDependencies": {
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-label": "^2.0.0",
-    "hazo_chat": "^2.0.16",
-    "hazo_ui": "^2.2.1",
+    "hazo_chat": "^2.1.0",
+    "lucide-react": ">=0.344.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-icons": "^5.0.0",
     "sonner": "^2.0.0"
+  },
+  "peerDependenciesMeta": {
+    "lucide-react": {
+      "optional": true
+    }
   },
   "overrides": {
     "lucide-react": "^0.553.0"

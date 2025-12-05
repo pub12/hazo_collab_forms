@@ -143,7 +143,7 @@ export const HazoCollabFormTextArea = React.forwardRef<
           ...textarea_props
         } = props;
 
-  const { field_id_final, handle_chat_icon_click, chat_is_open, is_chat_disabled } = use_collab_form_field({
+  const { field_id_final, handle_chat_icon_click, handle_chat_close, chat_is_open, is_chat_disabled } = use_collab_form_field({
     label,
     field_id,
     id,
@@ -154,6 +154,7 @@ export const HazoCollabFormTextArea = React.forwardRef<
     recipient_user_id,
     hazo_chat_on_open_change,
     hazo_chat_is_open,
+    hazo_chat_on_close,
   });
 
   // Determine if field should be disabled when chat is active
@@ -187,8 +188,7 @@ export const HazoCollabFormTextArea = React.forwardRef<
       hazo_chat_polling_interval={hazo_chat_polling_interval}
       hazo_chat_messages_per_page={hazo_chat_messages_per_page}
       hazo_chat_class_name={hazo_chat_class_name}
-      hazo_chat_on_close={hazo_chat_on_close}
-      hazo_chat_on_open_change={hazo_chat_on_open_change}
+      hazo_chat_on_close={handle_chat_close}
       hazo_chat_show_sidebar_toggle={hazo_chat_show_sidebar_toggle}
       hazo_chat_show_delete_button={hazo_chat_show_delete_button}
       hazo_chat_bubble_radius={hazo_chat_bubble_radius}

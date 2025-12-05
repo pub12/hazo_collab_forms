@@ -111,3 +111,5 @@ echo "Expected tables:"
 echo "  hazo_users, hazo_refresh_tokens, hazo_permissions, hazo_roles,"
 echo "  hazo_role_permissions, hazo_user_roles, hazo_chat"
 
+
+

@@ -444,6 +444,7 @@ export function use_collab_form_field({
   recipient_user_id,
   hazo_chat_on_open_change,
   hazo_chat_is_open,
+  hazo_chat_on_close,
 }: Pick<
   CollabFormFieldBaseProps,
   | 'label'
@@ -456,6 +457,7 @@ export function use_collab_form_field({
   | 'recipient_user_id'
   | 'hazo_chat_on_open_change'
   | 'hazo_chat_is_open'
+  | 'hazo_chat_on_close'
 >) {
   // Generate field ID if not provided
   const field_id_final = id || field_id || `collab-field-${label.toLowerCase().replace(/\s+/g, '-')}`;
@@ -504,12 +506,32 @@ export function use_collab_form_field({
     hazo_chat_on_open_change,
   ]);
 
+  /**
+   * Handle chat close - called when close button is clicked in HazoChat
+   */
+  const handle_chat_close = React.useCallback(() => {
+    // Update internal state if not controlled
+    if (!is_chat_controlled) {
+      set_internal_chat_is_open(false);
+    }
+    // Call on_close callback if provided
+    if (hazo_chat_on_close) {
+      hazo_chat_on_close();
+    }
+    // Call on_open_change callback if provided
+    if (hazo_chat_on_open_change) {
+      hazo_chat_on_open_change(false);
+    }
+  }, [hazo_chat_on_close, hazo_chat_on_open_change, is_chat_controlled]);
+
   return {
     field_id_final,
     handle_chat_icon_click,
+    handle_chat_close,
     chat_is_open,
     is_chat_disabled,
     receiver_user_id,
+    set_internal_chat_is_open,
   };
 }
 
@@ -538,7 +560,6 @@ export function CollabFormFieldContainer({
   hazo_chat_messages_per_page,
   hazo_chat_class_name,
   hazo_chat_on_close,
-  hazo_chat_on_open_change,
   hazo_chat_show_sidebar_toggle,
   hazo_chat_show_delete_button,
   hazo_chat_bubble_radius,
@@ -567,7 +588,6 @@ export function CollabFormFieldContainer({
   | 'hazo_chat_messages_per_page'
   | 'hazo_chat_class_name'
   | 'hazo_chat_on_close'
-  | 'hazo_chat_on_open_change'
   | 'hazo_chat_show_sidebar_toggle'
   | 'hazo_chat_show_delete_button'
   | 'hazo_chat_bubble_radius'
@@ -581,18 +601,11 @@ export function CollabFormFieldContainer({
   // Get receiver user ID (prefer hazo_chat_receiver_user_id, fallback to recipient_user_id)
   const receiver_user_id = hazo_chat_receiver_user_id || recipient_user_id;
 
-  // Internal state for chat open/close (if not controlled externally)
-  const [internal_chat_is_open, set_internal_chat_is_open] = React.useState(false);
+  // Determine if chat should be shown (hazo_chat_is_open is passed from the hook)
+  const show_chat = hazo_chat_is_open && receiver_user_id;
 
-  // Use controlled value if provided, otherwise use internal state
-  const chat_is_open = hazo_chat_is_open !== undefined ? hazo_chat_is_open : internal_chat_is_open;
-  const is_chat_controlled = hazo_chat_is_open !== undefined;
-
-  // Determine if chat should be shown
-  const show_chat = chat_is_open && receiver_user_id;
-
-  // Auto-determine is_chat_active from chat_is_open if not explicitly provided
-  const is_chat_active_final = is_chat_active !== undefined ? is_chat_active : chat_is_open;
+  // Auto-determine is_chat_active from hazo_chat_is_open if not explicitly provided
+  const is_chat_active_final = is_chat_active !== undefined ? is_chat_active : hazo_chat_is_open;
 
   // Convert files to references
   const additional_references = files ? convert_files_to_references(files) : undefined;
@@ -602,22 +615,6 @@ export function CollabFormFieldContainer({
   const chat_reference_type = hazo_chat_reference_type || 'field';
   const chat_title = hazo_chat_title || field_name || label;
   const chat_subtitle = hazo_chat_subtitle || `Discussing ${field_name || label}`;
-
-  // Handle chat close
-  const handle_chat_close = React.useCallback(() => {
-    // Update internal state if not controlled
-    if (!is_chat_controlled) {
-      set_internal_chat_is_open(false);
-    }
-    // Call on_close callback if provided
-    if (hazo_chat_on_close) {
-      hazo_chat_on_close();
-    }
-    // Call on_open_change callback if provided
-    if (hazo_chat_on_open_change) {
-      hazo_chat_on_open_change(false);
-    }
-  }, [hazo_chat_on_close, hazo_chat_on_open_change, is_chat_controlled]);
 
   // Container content
   const container_content = (
@@ -657,7 +654,7 @@ export function CollabFormFieldContainer({
                   timezone={hazo_chat_timezone}
                   title={chat_title}
                   subtitle={chat_subtitle}
-                  on_close={handle_chat_close}
+                  on_close={hazo_chat_on_close}
                   realtime_mode={hazo_chat_realtime_mode}
                   polling_interval={hazo_chat_polling_interval}
                   messages_per_page={hazo_chat_messages_per_page}

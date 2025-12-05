@@ -54,6 +54,6 @@
     "typescript": "^5.3.3"
   },
   "overrides": {
-    "hazo_chat": "2.0.16"
+    "hazo_chat": "2.1.0"
   }
 }
