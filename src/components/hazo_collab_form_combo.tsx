@@ -442,8 +442,14 @@ export const HazoCollabFormCombo = React.forwardRef<
             field_width_class_name || 'flex-1',
             field_width_class_name && 'flex-shrink-0'
           )}>
-            <div className="w-full h-9 rounded-md border border-destructive bg-transparent px-3 py-2 text-sm text-destructive">
-              shadcn Popover and Command components required. Install with: npx shadcn@latest add popover command
+            <div className="w-full rounded-md border border-destructive bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              <div className="font-medium">Missing shadcn/ui components</div>
+              <div className="mt-1 text-xs opacity-90">
+                Run: <code className="bg-destructive/20 px-1 rounded">npx hazo-collab-forms-setup --combo</code>
+              </div>
+              <div className="mt-1 text-xs opacity-70">
+                Or manually: <code className="bg-destructive/20 px-1 rounded">npx shadcn@latest add popover command</code>
+              </div>
             </div>
           </div>
           <CollabFormDataOkCheckbox

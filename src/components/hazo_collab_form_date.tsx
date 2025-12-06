@@ -461,8 +461,14 @@ export const HazoCollabFormDate = React.forwardRef<
             field_width_class_name || 'flex-1',
             field_width_class_name && 'flex-shrink-0'
           )}>
-            <div className="cls_collab_date_fallback w-full h-9 rounded-md border border-destructive bg-transparent px-3 py-1 text-sm text-muted-foreground flex items-center">
-              Date picker components not available. Please install: npx shadcn@latest add popover calendar button
+            <div className="cls_collab_date_fallback w-full rounded-md border border-destructive bg-destructive/10 px-3 py-2 text-sm text-destructive">
+              <div className="font-medium">Missing shadcn/ui components</div>
+              <div className="mt-1 text-xs opacity-90">
+                Run: <code className="bg-destructive/20 px-1 rounded">npx hazo-collab-forms-setup --date</code>
+              </div>
+              <div className="mt-1 text-xs opacity-70">
+                Or manually: <code className="bg-destructive/20 px-1 rounded">npx shadcn@latest add popover calendar button</code>
+              </div>
             </div>
           </div>
         </div>

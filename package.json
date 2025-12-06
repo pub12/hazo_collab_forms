@@ -28,7 +28,8 @@
     "templates"
   ],
   "bin": {
-    "hazo-collab-forms-verify": "./dist/bin/verify-setup.js"
+    "hazo-collab-forms-verify": "./dist/bin/verify-setup.js",
+    "hazo-collab-forms-setup": "./dist/bin/setup-shadcn.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
@@ -36,7 +37,8 @@
     "dev:test-app": "npm run build && cd test-app && npm run dev",
     "build:test-app": "npm run build && cd test-app && npm run build",
     "clean": "rm -rf dist",
-    "prepublishOnly": "npm run clean && npm run build"
+    "prepublishOnly": "npm run clean && npm run build",
+    "postinstall": "node dist/bin/postinstall.js 2>/dev/null || true"
   },
   "keywords": [
     "collaboration",
