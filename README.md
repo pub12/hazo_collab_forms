@@ -47,6 +47,9 @@ npx shadcn@latest add popover command
 # For HazoCollabFormDate (date picker)
 npx shadcn@latest add calendar
 
+# For file upload functionality (required when using accept_files prop)
+npx shadcn@latest add accordion
+
 # Optional but recommended
 npx shadcn@latest add separator card
 ```
@@ -108,7 +111,7 @@ npm install hazo_collab_forms react react-dom react-icons sonner lucide-react \
 ### One-Line shadcn Install (All Components)
 
 ```bash
-npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
+npx shadcn@latest add button label dialog tooltip sonner popover command calendar accordion separator card
 ```
 
 ---
@@ -149,6 +152,7 @@ export default function MyForm() {
 | `HazoCollabFormDate` | Date or date-range picker | + calendar |
 | `HazoCollabFormGroup` | Field grouping container | button, label, dialog |
 | `HazoCollabFormSet` | Complete form with field arrays | all components |
+| **File Upload** | When using `accept_files` prop | + **accordion** (required) |
 
 ## Import Paths
 
@@ -184,6 +188,12 @@ If you see errors about missing components, install the specific shadcn componen
 
 ```bash
 npx shadcn@latest add [component-name]
+```
+
+**Important**: If you're using file upload functionality (`accept_files` prop on any form field), you **must** install the accordion component:
+
+```bash
+npx shadcn@latest add accordion
 ```
 
 ### Verify Your Setup

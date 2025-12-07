@@ -13,7 +13,7 @@ npm install hazo_collab_forms react react-dom react-icons sonner lucide-react \
 
 # 2. Initialize shadcn (if not done) and install components
 npx shadcn@latest init
-npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
+npx shadcn@latest add button label dialog tooltip sonner popover command calendar accordion separator card
 
 # 3. Copy config templates
 cp node_modules/hazo_collab_forms/templates/*.ini ./
@@ -111,6 +111,12 @@ npx shadcn@latest add command
 npx shadcn@latest add calendar
 ```
 
+**For File Upload Functionality** (required when using `accept_files` prop on any form field):
+
+```bash
+npx shadcn@latest add accordion
+```
+
 **Optional but Recommended**:
 
 ```bash
@@ -121,7 +127,7 @@ npx shadcn@latest add card
 ### One-Line Install (All shadcn Components)
 
 ```bash
-npx shadcn@latest add button label dialog tooltip sonner popover command calendar separator card
+npx shadcn@latest add button label dialog tooltip sonner popover command calendar accordion separator card
 ```
 
 ### Component Requirements by Form Field
@@ -136,6 +142,7 @@ npx shadcn@latest add button label dialog tooltip sonner popover command calenda
 | `HazoCollabFormDate` | + calendar |
 | `HazoCollabFormGroup` | button, label, dialog, tooltip, sonner |
 | `HazoCollabFormSet` | all of the above |
+| **File Upload** | When using `accept_files` prop on any field | + **accordion** (required) |
 
 ---
 
@@ -364,6 +371,11 @@ Then run `npm install`.
    npm run build
    ```
 2. Check for missing shadcn components in error messages
+   - If you see errors about missing accordion components, install it:
+     ```bash
+     npx shadcn@latest add accordion
+     ```
+   - **Note**: Accordion is required when using file upload functionality (`accept_files` prop)
 3. Verify ES module imports use correct paths
 
 ---
@@ -388,5 +400,6 @@ Then run `npm install`.
 - [shadcn/ui Documentation](https://ui.shadcn.com)
 - [Hazo Chat Documentation](https://github.com/pub12/hazo_chat)
 - [Hazo Auth Documentation](https://github.com/pub12/hazo_auth)
+
 
 

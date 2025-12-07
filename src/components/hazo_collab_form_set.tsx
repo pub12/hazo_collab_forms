@@ -13,6 +13,7 @@ import {
   HazoCollabFormCheckbox,
   HazoCollabFormCombo,
   HazoCollabFormRadio,
+  HazoCollabFormDate,
   HazoCollabFormGroup,
   type RadioOption,
   type ComboboxOption,
@@ -99,7 +100,7 @@ export interface FieldConfig {
   
   /**
    * Component type (only for field_type: "field")
-   * One of: HazoCollabFormInputbox, HazoCollabFormRadio, HazoCollabFormCheckbox, HazoCollabFormCombo, HazoCollabFormTextArea
+   * One of: HazoCollabFormInputbox, HazoCollabFormRadio, HazoCollabFormCheckbox, HazoCollabFormCombo, HazoCollabFormTextArea, HazoCollabFormDate
    */
   component_type?: string;
   
@@ -230,6 +231,7 @@ const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
   HazoCollabFormCheckbox,
   HazoCollabFormCombo,
   HazoCollabFormRadio,
+  HazoCollabFormDate,
 };
 
 /**
@@ -737,7 +739,7 @@ export const HazoCollabFormSet = React.forwardRef<
         label: opt.label,
         value: opt.value,
       }));
-      
+
       return (
         <Component
           key={field.id}
@@ -748,7 +750,22 @@ export const HazoCollabFormSet = React.forwardRef<
         />
       );
     }
-    
+
+    if (field.component_type === 'HazoCollabFormDate') {
+      // Date component - supports single date and date range
+      return (
+        <Component
+          key={field.id}
+          {...base_props}
+          value={current_value}
+          onChange={(value: string | { from: string; to: string }) => handle_field_change(field.id, value)}
+          date_mode={field.input_format?.format_guide === 'range' ? 'range' : 'single'}
+          min_date={field.input_format?.format_guide === 'range' ? undefined : field.input_format?.format_guide}
+          placeholder={field.description}
+        />
+      );
+    }
+
     return null;
   };
   
