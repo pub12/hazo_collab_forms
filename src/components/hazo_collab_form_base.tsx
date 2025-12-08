@@ -109,18 +109,11 @@ export interface CollabFormFieldBaseProps {
   id?: string;
 
   /**
-   * Recipient user ID for chat functionality
-   * Required for chat features to work properly
-   * @deprecated Use hazo_chat_receiver_user_id instead
+   * HazoChat group ID (v3.0.0+)
+   * Required for chat to work, maps to HazoChat chat_group_id
+   * Identifies the chat group for group-based messaging
    */
-  recipient_user_id?: string;
-
-  /**
-   * HazoChat receiver user ID
-   * Required for chat to work, maps to HazoChat receiver_user_id
-   * If recipient_user_id is provided, it will be used as fallback
-   */
-  hazo_chat_receiver_user_id?: string;
+  hazo_chat_group_id?: string;
 
   /**
    * HazoChat reference ID
@@ -440,8 +433,7 @@ export function use_collab_form_field({
   field_data_id,
   field_name,
   on_chat_click,
-  hazo_chat_receiver_user_id,
-  recipient_user_id,
+  hazo_chat_group_id,
   hazo_chat_on_open_change,
   hazo_chat_is_open,
   hazo_chat_on_close,
@@ -453,8 +445,7 @@ export function use_collab_form_field({
   | 'field_data_id'
   | 'field_name'
   | 'on_chat_click'
-  | 'hazo_chat_receiver_user_id'
-  | 'recipient_user_id'
+  | 'hazo_chat_group_id'
   | 'hazo_chat_on_open_change'
   | 'hazo_chat_is_open'
   | 'hazo_chat_on_close'
@@ -469,11 +460,11 @@ export function use_collab_form_field({
   const chat_is_open = hazo_chat_is_open !== undefined ? hazo_chat_is_open : internal_chat_is_open;
   const is_chat_controlled = hazo_chat_is_open !== undefined;
 
-  // Get receiver user ID (prefer hazo_chat_receiver_user_id, fallback to recipient_user_id)
-  const receiver_user_id = hazo_chat_receiver_user_id || recipient_user_id;
+  // Get chat group ID
+  const chat_group_id = hazo_chat_group_id;
 
-  // Chat is disabled if no receiver_user_id is available (unless on_chat_click is provided as fallback)
-  const is_chat_disabled = !receiver_user_id && !on_chat_click;
+  // Chat is disabled if no chat_group_id is available (unless on_chat_click is provided as fallback)
+  const is_chat_disabled = !chat_group_id && !on_chat_click;
 
   /**
    * Handle chat icon click - trigger callback or open chat
@@ -485,8 +476,8 @@ export function use_collab_form_field({
       return;
     }
 
-    // If hazo_chat_receiver_user_id is provided, open chat internally
-    if (receiver_user_id) {
+    // If hazo_chat_group_id is provided, open chat internally
+    if (chat_group_id) {
       const new_open_state = !chat_is_open;
       if (!is_chat_controlled) {
         set_internal_chat_is_open(new_open_state);
@@ -500,7 +491,7 @@ export function use_collab_form_field({
     field_name,
     label,
     on_chat_click,
-    receiver_user_id,
+    chat_group_id,
     chat_is_open,
     is_chat_controlled,
     hazo_chat_on_open_change,
@@ -530,7 +521,7 @@ export function use_collab_form_field({
     handle_chat_close,
     chat_is_open,
     is_chat_disabled,
-    receiver_user_id,
+    chat_group_id,
     set_internal_chat_is_open,
   };
 }
@@ -547,8 +538,7 @@ export function CollabFormFieldContainer({
   children,
   // Chat-related props
   hazo_chat_is_open,
-  hazo_chat_receiver_user_id,
-  recipient_user_id,
+  hazo_chat_group_id,
   hazo_chat_reference_id,
   hazo_chat_reference_type,
   hazo_chat_api_base_url,
@@ -575,8 +565,7 @@ export function CollabFormFieldContainer({
   | 'is_data_ok_default'
   | 'container_class_name'
   | 'hazo_chat_is_open'
-  | 'hazo_chat_receiver_user_id'
-  | 'recipient_user_id'
+  | 'hazo_chat_group_id'
   | 'hazo_chat_reference_id'
   | 'hazo_chat_reference_type'
   | 'hazo_chat_api_base_url'
@@ -598,11 +587,11 @@ export function CollabFormFieldContainer({
 > & {
   children: React.ReactNode;
 }) {
-  // Get receiver user ID (prefer hazo_chat_receiver_user_id, fallback to recipient_user_id)
-  const receiver_user_id = hazo_chat_receiver_user_id || recipient_user_id;
+  // Get chat group ID
+  const chat_group_id = hazo_chat_group_id;
 
   // Determine if chat should be shown (hazo_chat_is_open is passed from the hook)
-  const show_chat = hazo_chat_is_open && receiver_user_id;
+  const show_chat = hazo_chat_is_open && chat_group_id;
 
   // Auto-determine is_chat_active from hazo_chat_is_open if not explicitly provided
   const is_chat_active_final = is_chat_active !== undefined ? is_chat_active : hazo_chat_is_open;
@@ -647,7 +636,7 @@ export function CollabFormFieldContainer({
             <div className="cls_collab_chat_content flex-1 flex flex-col min-h-0">
               <div className="cls_collab_chat_inner flex-1 min-h-0 w-full">
                 <HazoChat
-                  receiver_user_id={receiver_user_id}
+                  chat_group_id={chat_group_id}
                   reference_id={chat_reference_id}
                   reference_type={chat_reference_type}
                   api_base_url={hazo_chat_api_base_url}
@@ -744,7 +733,7 @@ export function CollabFormChatIcon({
           has_chat_messages && 'bg-destructive/10 border-destructive'
         )}
         aria-label={`Chat about ${label}`}
-        title={is_button_disabled ? 'Chat unavailable (recipient not configured)' : `Chat about ${label}`}
+        title={is_button_disabled ? 'Chat unavailable (chat group not configured)' : `Chat about ${label}`}
       >
         <IoChatbox className={cn("h-5 w-5", has_chat_messages && "text-destructive")} />
       </button>

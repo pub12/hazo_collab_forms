@@ -25,7 +25,7 @@
     "clsx": "^2.1.1",
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
-    "hazo_auth": "^1.6.4",
+    "hazo_auth": "^4.0.0",
     "hazo_collab_forms": "file:..",
     "hazo_config": "^1.0.0",
     "hazo_connect": "^2.3.1",
@@ -54,6 +54,6 @@
     "typescript": "^5.3.3"
   },
   "overrides": {
-    "hazo_chat": "2.1.0"
+    "hazo_chat": "3.0.0"
   }
 }

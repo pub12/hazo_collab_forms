@@ -666,8 +666,7 @@ export default function DateComponentPage() {
           min_files={component_props.min_files}
           max_files={component_props.max_files}
           file_accept={component_props.file_accept}
-          hazo_chat_receiver_user_id={component_props.hazo_chat_receiver_user_id}
-          recipient_user_id={component_props.recipient_user_id}
+          hazo_chat_group_id={component_props.hazo_chat_group_id}
           hazo_chat_reference_id={component_props.hazo_chat_reference_id}
           hazo_chat_reference_type={component_props.hazo_chat_reference_type}
           hazo_chat_api_base_url={component_props.hazo_chat_api_base_url}

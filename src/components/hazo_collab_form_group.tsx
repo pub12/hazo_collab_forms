@@ -206,8 +206,7 @@ export const HazoCollabFormGroup = React.forwardRef<
     on_files_change,
     id,
     // HazoChat props
-    hazo_chat_receiver_user_id,
-    recipient_user_id,
+    hazo_chat_group_id,
     hazo_chat_reference_id,
     hazo_chat_reference_type,
     hazo_chat_api_base_url,
@@ -233,8 +232,7 @@ export const HazoCollabFormGroup = React.forwardRef<
     field_data_id,
     field_name,
     on_chat_click,
-    hazo_chat_receiver_user_id,
-    recipient_user_id,
+    hazo_chat_group_id,
     hazo_chat_on_open_change,
     hazo_chat_is_open,
     hazo_chat_on_close,
@@ -304,8 +302,7 @@ export const HazoCollabFormGroup = React.forwardRef<
           container_class_name
         )}
         hazo_chat_is_open={chat_is_open}
-        hazo_chat_receiver_user_id={hazo_chat_receiver_user_id}
-        recipient_user_id={recipient_user_id}
+        hazo_chat_group_id={hazo_chat_group_id}
         hazo_chat_reference_id={hazo_chat_reference_id}
         hazo_chat_reference_type={hazo_chat_reference_type}
         hazo_chat_api_base_url={hazo_chat_api_base_url}

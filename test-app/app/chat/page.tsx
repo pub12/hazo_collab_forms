@@ -1,6 +1,7 @@
 /**
  * Chat page
- * Embedded chat interface using hazo_chat package
+ * Embedded chat interface using hazo_chat package v3.0.0+
+ * Uses group-based chat architecture
  */
 
 'use client';
@@ -9,17 +10,18 @@ import { HazoChat } from 'hazo_chat';
 
 /**
  * Chat page component
- * Displays embedded chat interface with specified recipient
+ * Displays embedded chat interface with specified chat group
  */
 export default function ChatPage() {
-  const recipient_id = '2775a808-88d9-4e43-aae9-47420ae003dc';
+  // Chat group ID - in production this would come from user context or API
+  const chat_group_id = '00000000-0000-0000-0000-000000000001';
 
   return (
     <div className="cls_chat_page_container h-full w-full">
-      <HazoChat 
-        receiver_user_id={recipient_id}
+      <HazoChat
+        chat_group_id={chat_group_id}
         title="Chat"
-        subtitle="Chat with recipient"
+        subtitle="Group chat"
       />
     </div>
   );

@@ -128,8 +128,8 @@ export default function AddressFormPage() {
             value={postcode}
             onChange={handle_postcode_change}
             placeholder="Enter postcode"
-            type="number"
-            maxLength={4}
+            input_type="numeric"
+            text_len_max={4}
             error={postcode_error}
             field_id="postcode"
             field_data_id="postcode-data"

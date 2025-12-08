@@ -65,7 +65,7 @@
   },
   "dependencies": {
     "clsx": "^2.1.0",
-    "hazo_auth": "^1.6.4",
+    "hazo_auth": "^4.0.0",
     "hazo_config": "^1.0.0",
     "hazo_ui": "^2.2.1",
     "server-only": "^0.0.1",
@@ -74,7 +74,7 @@
   "peerDependencies": {
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-label": "^2.0.0",
-    "hazo_chat": "^2.1.0",
+    "hazo_chat": "^3.0.0",
     "lucide-react": ">=0.344.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",

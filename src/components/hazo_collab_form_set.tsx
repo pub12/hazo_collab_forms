@@ -7,17 +7,15 @@
 'use client';
 
 import React from 'react';
-import {
-  HazoCollabFormInputbox,
-  HazoCollabFormTextArea,
-  HazoCollabFormCheckbox,
-  HazoCollabFormCombo,
-  HazoCollabFormRadio,
-  HazoCollabFormDate,
-  HazoCollabFormGroup,
-  type RadioOption,
-  type ComboboxOption,
-} from './index.js';
+// Import directly from each component file to avoid circular dependencies
+// (index.js exports HazoCollabFormSet which imports from these files)
+import { HazoCollabFormInputbox } from './hazo_collab_form_inputbox.js';
+import { HazoCollabFormTextArea } from './hazo_collab_form_textarea.js';
+import { HazoCollabFormCheckbox } from './hazo_collab_form_checkbox.js';
+import { HazoCollabFormCombo, type ComboboxOption } from './hazo_collab_form_combo.js';
+import { HazoCollabFormRadio, type RadioOption } from './hazo_collab_form_radio.js';
+import { HazoCollabFormDate } from './hazo_collab_form_date.js';
+import { HazoCollabFormGroup } from './hazo_collab_form_group.js';
 
 /**
  * Input option for radio, checkbox, or combo components
@@ -180,22 +178,22 @@ export interface HazoCollabFormSetProps {
    * Fields set configuration (JSON structure)
    */
   fields_set: FieldsSet;
-  
+
   /**
-   * Recipient ID to pass to each field's hazo_chat
+   * Chat group ID for hazo_chat v3.0.0+ (group-based chat)
    */
-  recipient_id?: string;
-  
+  chat_group_id?: string;
+
   /**
    * Optional callback when a field value changes
    */
   on_field_change?: (field_id: string, value: any) => void;
-  
+
   /**
    * Optional callback when form data changes (all fields)
    */
   on_form_data_change?: (form_data: Record<string, any>) => void;
-  
+
   /**
    * Initial form data (optional, for controlled component)
    */
@@ -295,16 +293,16 @@ export const HazoCollabFormSet = React.forwardRef<
   HazoCollabFormSetRef,
   HazoCollabFormSetProps
 >((props, ref) => {
-  const { fields_set, recipient_id: recipient_id_prop, on_field_change, on_form_data_change, initial_data } = props;
-  
-  // State for default recipient_id from config
-  const [default_recipient_id, set_default_recipient_id] = React.useState<string | undefined>(undefined);
-  
-  // Fetch default recipient_id from config if recipient_id prop is not provided
+  const { fields_set, chat_group_id: chat_group_id_prop, on_field_change, on_form_data_change, initial_data } = props;
+
+  // State for default chat_group_id from config
+  const [default_chat_group_id, set_default_chat_group_id] = React.useState<string | undefined>(undefined);
+
+  // Fetch default chat_group_id from config if chat_group_id prop is not provided
   React.useEffect(() => {
-    // Only fetch if recipient_id prop is not provided
-    if (!recipient_id_prop) {
-      const fetch_default_recipient_id = async () => {
+    // Only fetch if chat_group_id prop is not provided
+    if (!chat_group_id_prop) {
+      const fetch_default_chat_group_id = async () => {
         try {
           // First, get the current user from hazo_auth
           const auth_response = await fetch('/api/hazo_auth/me');
@@ -312,52 +310,52 @@ export const HazoCollabFormSet = React.forwardRef<
             console.debug('[HazoCollabFormSet] Auth API not available or user not authenticated');
             return; // User not authenticated or API route doesn't exist
           }
-          
+
           const auth_data = await auth_response.json();
           if (!auth_data.authenticated || !auth_data.user_id) {
             console.debug('[HazoCollabFormSet] User not authenticated');
             return; // User not authenticated
           }
-          
+
           const current_user_id = auth_data.user_id;
           console.log('[HazoCollabFormSet] Current user ID:', current_user_id);
           console.log('[HazoCollabFormSet] Auth data:', auth_data);
-          
-          // Fetch the config array
+
+          // Fetch the config array for chat groups
           const config_response = await fetch(
-            `/api/config?section=${encodeURIComponent('chat')}&key=${encodeURIComponent('default_testing_recipient_id')}`
+            `/api/config?section=${encodeURIComponent('chat')}&key=${encodeURIComponent('default_testing_chat_group_id')}`
           );
-          
+
           if (config_response.ok) {
             const config_data = await config_response.json();
             console.log('[HazoCollabFormSet] Config API response:', config_data);
-            
+
             if (config_data.value) {
               try {
                 // Parse the JSON array
-                const recipient_mappings = JSON.parse(config_data.value) as Array<{
+                const chat_group_mappings = JSON.parse(config_data.value) as Array<{
                   current_user: string;
-                  recipient_user: string;
+                  chat_group: string;
                 }>;
-                
-                console.log('[HazoCollabFormSet] Recipient mappings:', recipient_mappings);
+
+                console.log('[HazoCollabFormSet] Chat group mappings:', chat_group_mappings);
                 console.log('[HazoCollabFormSet] Looking for current user:', current_user_id);
-                
+
                 // Find the matching entry for the current user
-                const mapping = recipient_mappings.find(
+                const mapping = chat_group_mappings.find(
                   (m) => m.current_user === current_user_id
                 );
-                
-                if (mapping && mapping.recipient_user) {
-                  console.log('[HazoCollabFormSet] Found recipient mapping:', mapping.recipient_user);
-                  set_default_recipient_id(mapping.recipient_user);
+
+                if (mapping && mapping.chat_group) {
+                  console.log('[HazoCollabFormSet] Found chat group mapping:', mapping.chat_group);
+                  set_default_chat_group_id(mapping.chat_group);
                 } else {
-                  console.warn('[HazoCollabFormSet] No recipient mapping found for current user:', current_user_id);
-                  console.log('[HazoCollabFormSet] Available mappings:', recipient_mappings.map(m => m.current_user));
+                  console.warn('[HazoCollabFormSet] No chat group mapping found for current user:', current_user_id);
+                  console.log('[HazoCollabFormSet] Available mappings:', chat_group_mappings.map(m => m.current_user));
                 }
               } catch (parse_error) {
                 // Invalid JSON format
-                console.error('[HazoCollabFormSet] Could not parse default_testing_recipient_id config:', parse_error);
+                console.error('[HazoCollabFormSet] Could not parse default_testing_chat_group_id config:', parse_error);
                 console.error('[HazoCollabFormSet] Config value:', config_data.value);
               }
             } else {
@@ -368,16 +366,16 @@ export const HazoCollabFormSet = React.forwardRef<
           }
         } catch (error) {
           // Log error but allow component to work even if API route doesn't exist
-          console.error('[HazoCollabFormSet] Could not fetch default_testing_recipient_id from config:', error);
+          console.error('[HazoCollabFormSet] Could not fetch default_testing_chat_group_id from config:', error);
         }
       };
-      
-      fetch_default_recipient_id();
+
+      fetch_default_chat_group_id();
     }
-  }, [recipient_id_prop]);
-  
-  // Use recipient_id prop if provided, otherwise use default from config
-  const recipient_id = recipient_id_prop || default_recipient_id;
+  }, [chat_group_id_prop]);
+
+  // Use chat_group_id prop if provided, otherwise use default from config
+  const chat_group_id = chat_group_id_prop || default_chat_group_id;
   
   // State for current user ID
   const [current_user_id, set_current_user_id] = React.useState<string | undefined>(undefined);
@@ -406,14 +404,14 @@ export const HazoCollabFormSet = React.forwardRef<
   
   // Check for unread messages and create mapping of reference_id to has_chat_messages
   React.useEffect(() => {
-    if (!current_user_id || !recipient_id) {
-      console.log('[HazoCollabFormSet] Skipping unread check - missing:', { current_user_id, recipient_id });
+    if (!current_user_id || !chat_group_id) {
+      console.log('[HazoCollabFormSet] Skipping unread check - missing:', { current_user_id, chat_group_id });
       return;
     }
-    
+
     /**
      * Check hazo_chat table for records where:
-     * - receiver_user_id = current_user_id (current user is the receiver)
+     * - chat_group_id matches the specified group (v3.0.0 group-based chat)
      * - read_at IS NULL (unread messages)
      * Get unique reference_id values and match with field_id
      */
@@ -430,36 +428,35 @@ export const HazoCollabFormSet = React.forwardRef<
           });
         };
         process_fields_for_ids(fields_set.field_list);
-        
+
         // Check each field for unread messages
         // We need to query each reference_id individually since the API requires it
         const unread_reference_ids = new Set<string>();
-        
+
         console.log('[HazoCollabFormSet] Checking unread messages for fields:', all_field_ids);
         console.log('[HazoCollabFormSet] Current user ID for unread check:', current_user_id);
-        console.log('[HazoCollabFormSet] Recipient ID:', recipient_id);
-        
+        console.log('[HazoCollabFormSet] Chat group ID:', chat_group_id);
+
         // Query all fields in parallel
-        // The API returns messages for a conversation between the current user and the recipient
-        // We need to check if the current user has unread messages (where current user is the receiver)
+        // The API returns messages for the chat group
+        // We need to check if there are unread messages in the group
         const check_promises = all_field_ids.map(async (field_id) => {
           try {
-            // Query messages for this reference_id with the recipient
-            // The API will return all messages in the conversation
+            // Query messages for this reference_id with the chat group
             const params = new URLSearchParams({
-              receiver_user_id: recipient_id || '',
+              chat_group_id: chat_group_id || '',
               reference_id: field_id,
             });
-            
+
             console.log(`[HazoCollabFormSet] Checking field ${field_id} with params:`, params.toString());
-            
+
             const response = await fetch(`/api/hazo_chat/messages?${params.toString()}`);
-            
+
             if (response.ok) {
               const data = await response.json();
               const messages = data.messages || [];
               const api_current_user_id = data.current_user_id;
-              
+
               console.log(`[HazoCollabFormSet] Field ${field_id} - API response:`, {
                 messages_count: messages.length,
                 api_current_user_id,
@@ -467,32 +464,31 @@ export const HazoCollabFormSet = React.forwardRef<
                 messages: messages.map((m: any) => ({
                   id: m.id,
                   sender_user_id: m.sender_user_id,
-                  receiver_user_id: m.receiver_user_id,
+                  chat_group_id: m.chat_group_id,
                   read_at: m.read_at,
                 }))
               });
-              
-              // Filter for unread messages where the current user is the RECEIVER
-              // (messages sent TO the current user that haven't been read)
-              // Use api_current_user_id if available, otherwise fall back to local current_user_id
+
+              // Filter for unread messages not sent by the current user
+              // (messages from other group members that haven't been read)
               const effective_current_user_id = api_current_user_id || current_user_id;
-              
+
               const has_unread = Array.isArray(messages) && messages.some((msg: any) => {
                 const is_unread = msg.read_at === null || msg.read_at === undefined;
-                const is_receiver = msg.receiver_user_id === effective_current_user_id;
+                const is_from_others = msg.sender_user_id !== effective_current_user_id;
                 console.log(`[HazoCollabFormSet] Message check:`, {
                   message_id: msg.id,
                   is_unread,
-                  is_receiver,
-                  receiver_user_id: msg.receiver_user_id,
+                  is_from_others,
+                  sender_user_id: msg.sender_user_id,
                   effective_current_user_id,
                   read_at: msg.read_at,
                 });
-                return is_unread && is_receiver;
+                return is_unread && is_from_others;
               });
-              
+
               console.log(`[HazoCollabFormSet] Field ${field_id} has_unread:`, has_unread);
-              
+
               if (has_unread) {
                 unread_reference_ids.add(field_id);
               }
@@ -503,44 +499,44 @@ export const HazoCollabFormSet = React.forwardRef<
             console.error(`[HazoCollabFormSet] Error checking field ${field_id}:`, error);
           }
         });
-        
+
         await Promise.all(check_promises);
-        
+
         // Create mapping of field_id -> has_chat_messages
         const chat_messages_map: Record<string, boolean> = {};
         const process_fields_for_mapping = (field_list: FieldConfig[]) => {
           field_list.forEach((field) => {
             // field.id is used as field_data_id, which is used as reference_id in chat
             chat_messages_map[field.id] = unread_reference_ids.has(field.id);
-            
+
             // Process sub_fields if it's a group
             if (field.field_type === 'group' && field.sub_fields) {
               process_fields_for_mapping(field.sub_fields);
             }
           });
         };
-        
+
         process_fields_for_mapping(fields_set.field_list);
-        
+
         console.log('[HazoCollabFormSet] Unread reference IDs:', Array.from(unread_reference_ids));
         console.log('[HazoCollabFormSet] Chat messages map:', chat_messages_map);
-        
+
         set_field_chat_messages(chat_messages_map);
       } catch (error) {
         console.error('[HazoCollabFormSet] Error checking unread messages:', error);
         set_field_chat_messages({});
       }
     };
-    
+
     check_unread_messages();
-    
+
     // Set up polling to check for unread messages every 5 seconds
     const interval_id = setInterval(check_unread_messages, 5000);
-    
+
     return () => {
       clearInterval(interval_id);
     };
-  }, [current_user_id, recipient_id, fields_set.field_list]);
+  }, [current_user_id, chat_group_id, fields_set.field_list]);
   
   // Initialize form data from field config or initial_data
   const initial_form_data = React.useMemo(() => {
@@ -644,8 +640,7 @@ export const HazoCollabFormSet = React.forwardRef<
           field_data_id={field.id}
           field_name={field.label}
           accept_files={field.accept_files ?? fields_set.accept_files}
-          recipient_user_id={recipient_id}
-          hazo_chat_receiver_user_id={recipient_id}
+          hazo_chat_group_id={chat_group_id}
           has_chat_messages={field_chat_messages[field.id] || false}
         >
           {field.sub_fields.map(render_field)}
@@ -682,8 +677,7 @@ export const HazoCollabFormSet = React.forwardRef<
       label: field.label,
       field_data_id: field.id,
       field_name: field.label,
-      recipient_user_id: recipient_id,
-      hazo_chat_receiver_user_id: recipient_id,
+      hazo_chat_group_id: chat_group_id,
       accept_files: field.accept_files ?? fields_set.accept_files,
       field_width_class_name,
       required: is_required,

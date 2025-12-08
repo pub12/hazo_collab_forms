@@ -1,6 +1,6 @@
 /**
  * Type declarations for hazo_chat module
- * Temporary workaround until hazo_chat package includes proper type definitions
+ * Updated for hazo_chat v3.0.0 - Group-based chat architecture
  */
 
 declare module 'hazo_chat' {
@@ -18,7 +18,8 @@ declare module 'hazo_chat' {
   }
 
   export interface HazoChatProps {
-    receiver_user_id: string;
+    /** UUID of the chat group (v3.0.0+ - group-based chat) */
+    chat_group_id: string;
     reference_id?: string;
     reference_type?: string;
     api_base_url?: string;
