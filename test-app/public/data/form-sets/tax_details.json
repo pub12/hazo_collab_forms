@@ -11,6 +11,7 @@
       "description": "Your unique identifying number with the Australian Taxation Office (ATO).",
       "input_type": "numeric",
       "accept_files": false,
+      "data_stabiltiy": "stable",
       "input_format": {
         "format_guide": "9 digits only (e.g., 123456789)",
         "text_max_len": 9,
@@ -27,6 +28,7 @@
       "description": "Indicate your residency status for tax purposes, which affects your tax-free threshold and tax rates.",
       "input_type": "alpha",
       "accept_files": false,
+      "data_stabiltiy": "semi-stable",
       "input_format": {
         "format_guide": "Select Yes or No"
       },
