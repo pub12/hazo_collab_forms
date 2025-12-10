@@ -13,8 +13,10 @@ import {
   CollabFormFieldLabel,
   CollabFormChatIcon,
   CollabFormFieldError,
+  CollabFormFieldReferenceTag,
   CollabFormDataOkCheckbox,
   CollabFormFileUploadSection,
+  CollabFormNotesIcon,
   type CollabFormFieldBaseProps,
   type FileData,
 } from './hazo_collab_form_base.js';
@@ -119,6 +121,14 @@ export const HazoCollabFormTextArea = React.forwardRef<
           file_processor,
           files: controlled_files_prop,
           on_files_change,
+          // Notes props
+          enable_notes,
+          disable_notes,
+          notes,
+          on_notes_change,
+          has_notes,
+          is_notes_active,
+          current_user,
           className,
           id,
           // HazoChat props
@@ -139,6 +149,10 @@ export const HazoCollabFormTextArea = React.forwardRef<
           hazo_chat_show_sidebar_toggle,
           hazo_chat_show_delete_button,
           hazo_chat_bubble_radius,
+          // Reference tag props
+          reference_value,
+          reference_label,
+          reference_tag_background_color,
           ...textarea_props
         } = props;
 
@@ -226,7 +240,7 @@ export const HazoCollabFormTextArea = React.forwardRef<
           />
         </div>
         
-        {/* Actions wrapper: Data OK checkbox and chat icon */}
+        {/* Actions wrapper: Data OK checkbox, notes icon, and chat icon */}
         <div className="cls_collab_textarea_actions flex items-start gap-2 flex-shrink-0 pt-1" suppressHydrationWarning>
           {/* Data OK checkbox - conditionally visible */}
           {!disable_data_ok && (
@@ -237,7 +251,20 @@ export const HazoCollabFormTextArea = React.forwardRef<
               editable={data_ok_editable}
             />
           )}
-          
+
+          {/* Notes icon - conditionally visible */}
+          {enable_notes && !disable_notes && (
+            <CollabFormNotesIcon
+              label={label}
+              error={error}
+              has_notes={has_notes}
+              notes={notes}
+              on_notes_change={on_notes_change}
+              current_user={current_user}
+              disabled={disable_notes}
+            />
+          )}
+
           {/* Chat icon button - conditionally visible */}
           {!disable_chat && (
             <CollabFormChatIcon
@@ -252,6 +279,13 @@ export const HazoCollabFormTextArea = React.forwardRef<
           )}
         </div>
       </div>
+
+      {/* Reference tag - below input, above error */}
+      <CollabFormFieldReferenceTag
+        reference_value={reference_value}
+        reference_label={reference_label}
+        reference_tag_background_color={reference_tag_background_color}
+      />
 
       {/* Error message */}
       <CollabFormFieldError

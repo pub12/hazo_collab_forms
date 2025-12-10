@@ -16,6 +16,7 @@ import { HazoCollabFormCombo, type ComboboxOption } from './hazo_collab_form_com
 import { HazoCollabFormRadio, type RadioOption } from './hazo_collab_form_radio.js';
 import { HazoCollabFormDate } from './hazo_collab_form_date.js';
 import { HazoCollabFormGroup } from './hazo_collab_form_group.js';
+import type { NoteEntry } from './hazo_collab_form_base.js';
 
 /**
  * Input option for radio, checkbox, or combo components
@@ -148,6 +149,37 @@ export interface FieldConfig {
    * When true, displays a red asterisk next to the label
    */
   required?: boolean;
+
+  /**
+   * Whether to enable notes for this field
+   * When true, displays a notes icon that allows users to add/view notes
+   */
+  enable_notes?: boolean;
+
+  /**
+   * Array of notes for this field
+   * Each note contains user info, timestamp, and note content
+   */
+  notes?: NoteEntry[];
+
+  /**
+   * Reference value to display in a tag below the field input
+   * If provided, displays in format "reference_label: reference_value" or just "reference_value"
+   */
+  reference_value?: string;
+
+  /**
+   * Reference label to display in a tag below the field input
+   * If provided alone, displays just "reference_label"
+   * If provided with reference_value, displays "reference_label: reference_value"
+   */
+  reference_label?: string;
+
+  /**
+   * Background color class for the reference tag
+   * Default: "bg-muted"
+   */
+  reference_tag_background_color?: string;
 }
 
 /**
@@ -198,6 +230,27 @@ export interface HazoCollabFormSetProps {
    * Initial form data (optional, for controlled component)
    */
   initial_data?: Record<string, any>;
+
+  /**
+   * Enable notes for all fields in the form set
+   * When true, all fields will have the notes icon enabled
+   * Individual fields can still override this with their own enable_notes setting
+   */
+  enable_notes?: boolean;
+
+  /**
+   * Optional callback when notes change for any field
+   * Called with field_id and the updated notes array
+   * Use this to persist notes to your backend
+   */
+  on_notes_change?: (field_id: string, notes: NoteEntry[]) => void;
+
+  /**
+   * Optional callback when all notes data changes
+   * Called with a map of field_id -> notes array
+   * Use this to get all notes when any field's notes change
+   */
+  on_all_notes_change?: (all_notes: Record<string, NoteEntry[]>) => void;
 }
 
 /**
@@ -208,16 +261,22 @@ export interface HazoCollabFormSetRef {
    * Get all form data
    */
   get_form_data: () => Record<string, any>;
-  
+
   /**
    * Set form data
    */
   set_form_data: (data: Record<string, any>) => void;
-  
+
   /**
    * Reset form to initial values
    */
   reset_form: () => void;
+
+  /**
+   * Get all notes data
+   * Returns a map of field_id -> notes array
+   */
+  get_notes_data: () => Record<string, NoteEntry[]>;
 }
 
 /**
@@ -293,7 +352,7 @@ export const HazoCollabFormSet = React.forwardRef<
   HazoCollabFormSetRef,
   HazoCollabFormSetProps
 >((props, ref) => {
-  const { fields_set, chat_group_id: chat_group_id_prop, on_field_change, on_form_data_change, initial_data } = props;
+  const { fields_set, chat_group_id: chat_group_id_prop, on_field_change, on_form_data_change, initial_data, enable_notes: enable_notes_prop, on_notes_change: on_notes_change_prop, on_all_notes_change } = props;
 
   // State for default chat_group_id from config
   const [default_chat_group_id, set_default_chat_group_id] = React.useState<string | undefined>(undefined);
@@ -382,7 +441,47 @@ export const HazoCollabFormSet = React.forwardRef<
   
   // State for mapping of field_id to has_chat_messages
   const [field_chat_messages, set_field_chat_messages] = React.useState<Record<string, boolean>>({});
-  
+
+  // State for notes per field
+  const [field_notes, set_field_notes] = React.useState<Record<string, NoteEntry[]>>({});
+
+  // Initialize notes from field config
+  React.useEffect(() => {
+    const notes_map: Record<string, NoteEntry[]> = {};
+    const process_field_notes = (field_list: FieldConfig[]) => {
+      field_list.forEach((field) => {
+        if (field.notes && field.notes.length > 0) {
+          notes_map[field.id] = field.notes;
+        }
+        if (field.field_type === 'group' && field.sub_fields) {
+          process_field_notes(field.sub_fields);
+        }
+      });
+    };
+    process_field_notes(fields_set.field_list);
+    set_field_notes(notes_map);
+  }, [fields_set.field_list]);
+
+  /**
+   * Handle notes change for a field
+   */
+  const handle_notes_change = React.useCallback((field_id: string, new_notes: NoteEntry[]) => {
+    set_field_notes((prev) => {
+      const updated_notes = {
+        ...prev,
+        [field_id]: new_notes,
+      };
+      // Call the callbacks to allow parent to persist
+      if (on_notes_change_prop) {
+        on_notes_change_prop(field_id, new_notes);
+      }
+      if (on_all_notes_change) {
+        on_all_notes_change(updated_notes);
+      }
+      return updated_notes;
+    });
+  }, [on_notes_change_prop, on_all_notes_change]);
+
   // Get current user ID
   React.useEffect(() => {
     const fetch_current_user = async () => {
@@ -563,7 +662,8 @@ export const HazoCollabFormSet = React.forwardRef<
         on_form_data_change(initial_form_data);
       }
     },
-  }), [form_data, initial_form_data, on_form_data_change]);
+    get_notes_data: () => field_notes,
+  }), [form_data, initial_form_data, on_form_data_change, field_notes]);
   
   /**
    * Handle field value change
@@ -642,6 +742,13 @@ export const HazoCollabFormSet = React.forwardRef<
           accept_files={field.accept_files ?? fields_set.accept_files}
           hazo_chat_group_id={chat_group_id}
           has_chat_messages={field_chat_messages[field.id] || false}
+          enable_notes={field.enable_notes ?? enable_notes_prop}
+          notes={field_notes[field.id] || []}
+          on_notes_change={(new_notes: NoteEntry[]) => handle_notes_change(field.id, new_notes)}
+          has_notes={(field_notes[field.id]?.length || 0) > 0}
+          reference_value={field.reference_value}
+          reference_label={field.reference_label}
+          reference_tag_background_color={field.reference_tag_background_color}
         >
           {field.sub_fields.map(render_field)}
         </HazoCollabFormGroup>
@@ -682,6 +789,15 @@ export const HazoCollabFormSet = React.forwardRef<
       field_width_class_name,
       required: is_required,
       has_chat_messages: field_chat_messages[field.id] || false,
+      // Notes props - field-level enable_notes takes precedence, then formset-level prop
+      enable_notes: field.enable_notes ?? enable_notes_prop,
+      notes: field_notes[field.id] || [],
+      on_notes_change: (new_notes: NoteEntry[]) => handle_notes_change(field.id, new_notes),
+      has_notes: (field_notes[field.id]?.length || 0) > 0,
+      // Reference tag props
+      reference_value: field.reference_value,
+      reference_label: field.reference_label,
+      reference_tag_background_color: field.reference_tag_background_color,
     };
     
     // Component-specific props

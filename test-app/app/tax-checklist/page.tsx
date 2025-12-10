@@ -91,7 +91,6 @@ export default function TaxChecklistPage() {
   const full_legal_name_has_messages = use_chat_messages_check({
     reference_id: 'full-legal-name-data-001',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -99,7 +98,6 @@ export default function TaxChecklistPage() {
   const date_of_birth_has_messages = use_chat_messages_check({
     reference_id: 'date-of-birth-data-002',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -107,7 +105,6 @@ export default function TaxChecklistPage() {
   const tax_file_number_has_messages = use_chat_messages_check({
     reference_id: 'tax-file-number-data-003',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -115,7 +112,6 @@ export default function TaxChecklistPage() {
   const tax_status_has_messages = use_chat_messages_check({
     reference_id: 'tax-status-data-004',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -123,7 +119,6 @@ export default function TaxChecklistPage() {
   const postal_address_change_has_messages = use_chat_messages_check({
     reference_id: 'postal-address-change-data-010',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -132,7 +127,6 @@ export default function TaxChecklistPage() {
   const account_name_has_messages = use_chat_messages_check({
     reference_id: 'account-name-data-005',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -140,7 +134,6 @@ export default function TaxChecklistPage() {
   const bsb_number_has_messages = use_chat_messages_check({
     reference_id: 'bsb-number-data-006',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -148,7 +141,6 @@ export default function TaxChecklistPage() {
   const account_number_has_messages = use_chat_messages_check({
     reference_id: 'account-number-data-007',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -157,7 +149,6 @@ export default function TaxChecklistPage() {
   const notes_has_messages = use_chat_messages_check({
     reference_id: 'notes-data-008',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -165,7 +156,6 @@ export default function TaxChecklistPage() {
   const australian_state_has_messages = use_chat_messages_check({
     reference_id: 'australian-state-data-009',
     reference_type: '',
-    recipient_user_id,
     enabled: true,
     poll_interval: 5000,
   });
@@ -334,13 +324,11 @@ export default function TaxChecklistPage() {
                     field_id="full_legal_name"
                     field_data_id="full-legal-name-data-001"
                     field_name="Your full legal name"
-                    recipient_user_id={recipient_user_id}
-                    on_chat_click={handle_chat_click}
+                                        on_chat_click={handle_chat_click}
                     has_chat_messages={full_legal_name_has_messages.has_messages}
                     is_chat_active={active_chat_field_data_id === 'full-legal-name-data-001'}
                     placeholder="Enter your full legal name"
-                    type="text"
-                    data_ok_checked={full_legal_name_data_ok}
+                                        data_ok_checked={full_legal_name_data_ok}
                     on_data_ok_change={set_full_legal_name_data_ok}
                     additional_context={{
                       section: 'Individual Information',
@@ -354,7 +342,7 @@ export default function TaxChecklistPage() {
                           <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                             <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                               <HazoChat
-                                receiver_user_id={recipient_user_id}
+                                chat_group_id="test-chat-group"
                                 reference_id={active_chat_field_data_id}
                                 reference_type=""
                                 title={active_chat_field_name || 'Chat'}
@@ -383,14 +371,12 @@ export default function TaxChecklistPage() {
                     field_id="date_of_birth"
                     field_data_id="date-of-birth-data-002"
                     field_name="Date of Birth"
-                    recipient_user_id={recipient_user_id}
-                    on_chat_click={handle_chat_click}
+                                        on_chat_click={handle_chat_click}
                     has_chat_messages={date_of_birth_has_messages.has_messages}
                     is_chat_active={active_chat_field_data_id === 'date-of-birth-data-002'}
                     chat_background_color={field_background_color}
                     placeholder="Enter your date of birth (DD/MM/YYYY)"
-                    type="text"
-                    additional_context={{
+                                        additional_context={{
                       section: 'Individual Information',
                       required: true,
                     }}
@@ -402,7 +388,7 @@ export default function TaxChecklistPage() {
                           <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                             <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                               <HazoChat
-                                receiver_user_id={recipient_user_id}
+                                chat_group_id="test-chat-group"
                                 reference_id={active_chat_field_data_id}
                                 reference_type=""
                                 title={active_chat_field_name || 'Chat'}
@@ -431,14 +417,12 @@ export default function TaxChecklistPage() {
                     field_id="tax_file_number"
                     field_data_id="tax-file-number-data-003"
                     field_name="Tax File Number"
-                    recipient_user_id={recipient_user_id}
-                    on_chat_click={handle_chat_click}
+                                        on_chat_click={handle_chat_click}
                     has_chat_messages={tax_file_number_has_messages.has_messages}
                     is_chat_active={active_chat_field_data_id === 'tax-file-number-data-003'}
                     chat_background_color={field_background_color}
                     placeholder="Enter your tax file number"
-                    type="text"
-                    multi_state_radio={{
+                                        multi_state_radio={{
                       data: [
                         {
                           label: 'Low Priority',
@@ -476,7 +460,7 @@ export default function TaxChecklistPage() {
                           <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                             <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                               <HazoChat
-                                receiver_user_id={recipient_user_id}
+                                chat_group_id="test-chat-group"
                                 reference_id={active_chat_field_data_id}
                                 reference_type=""
                                 title={active_chat_field_name || 'Chat'}
@@ -505,8 +489,7 @@ export default function TaxChecklistPage() {
                     field_id="tax_status"
                     field_data_id="tax-status-data-004"
                     field_name="Tax Status"
-                    recipient_user_id={recipient_user_id}
-                    on_chat_click={handle_chat_click}
+                                        on_chat_click={handle_chat_click}
                     has_chat_messages={tax_status_has_messages.has_messages}
                     is_chat_active={active_chat_field_data_id === 'tax-status-data-004'}
                     chat_background_color={field_background_color}
@@ -522,7 +505,7 @@ export default function TaxChecklistPage() {
                           <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                             <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                               <HazoChat
-                                receiver_user_id={recipient_user_id}
+                                chat_group_id="test-chat-group"
                                 reference_id={active_chat_field_data_id}
                                 reference_type=""
                                 title={active_chat_field_name || 'Chat'}
@@ -555,8 +538,7 @@ export default function TaxChecklistPage() {
                         field_id="postal_address_change"
                         field_data_id="postal-address-change-data-010"
                         field_name="Postal Address Change"
-                        recipient_user_id={recipient_user_id}
-                        on_chat_click={handle_chat_click}
+                                                on_chat_click={handle_chat_click}
                         has_chat_messages={postal_address_change_has_messages.has_messages}
                         is_chat_active={active_chat_field_data_id === 'postal-address-change-data-010'}
                         chat_background_color={field_background_color}
@@ -573,7 +555,7 @@ export default function TaxChecklistPage() {
                           <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                             <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                               <HazoChat
-                                receiver_user_id={recipient_user_id}
+                                chat_group_id="test-chat-group"
                                 reference_id={active_chat_field_data_id}
                                 reference_type=""
                                 title={active_chat_field_name || 'Chat'}
@@ -613,14 +595,12 @@ export default function TaxChecklistPage() {
                          field_id="account_name"
                          field_data_id="account-name-data-005"
                          field_name="Account Name"
-                         recipient_user_id={recipient_user_id}
-                         on_chat_click={handle_chat_click}
+                                                  on_chat_click={handle_chat_click}
                          has_chat_messages={account_name_has_messages.has_messages}
                          is_chat_active={active_chat_field_data_id === 'account-name-data-005'}
                     chat_background_color={field_background_color}
                          placeholder="Enter account name"
-                         type="text"
-                         additional_context={{
+                                                  additional_context={{
                            section: 'Bank Details',
                            required: true,
                          }}
@@ -632,7 +612,7 @@ export default function TaxChecklistPage() {
                                <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                                  <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                                    <HazoChat
-                                     receiver_user_id={recipient_user_id}
+                                     chat_group_id="test-chat-group"
                                      reference_id={active_chat_field_data_id}
                                      reference_type=""
                                      title={active_chat_field_name || 'Chat'}
@@ -660,14 +640,12 @@ export default function TaxChecklistPage() {
                          field_id="bsb_number"
                          field_data_id="bsb-number-data-006"
                          field_name="BSB Number"
-                         recipient_user_id={recipient_user_id}
-                         on_chat_click={handle_chat_click}
+                                                  on_chat_click={handle_chat_click}
                          has_chat_messages={bsb_number_has_messages.has_messages}
                          is_chat_active={active_chat_field_data_id === 'bsb-number-data-006'}
                     chat_background_color={field_background_color}
                          placeholder="Enter BSB number"
-                         type="text"
-                         additional_context={{
+                                                  additional_context={{
                            section: 'Bank Details',
                            required: true,
                          }}
@@ -679,7 +657,7 @@ export default function TaxChecklistPage() {
                                <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                                  <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                                    <HazoChat
-                                     receiver_user_id={recipient_user_id}
+                                     chat_group_id="test-chat-group"
                                      reference_id={active_chat_field_data_id}
                                      reference_type=""
                                      title={active_chat_field_name || 'Chat'}
@@ -707,14 +685,12 @@ export default function TaxChecklistPage() {
                          field_id="account_number"
                          field_data_id="account-number-data-007"
                          field_name="Account Number"
-                         recipient_user_id={recipient_user_id}
-                         on_chat_click={handle_chat_click}
+                                                  on_chat_click={handle_chat_click}
                          has_chat_messages={true}
                          is_chat_active={active_chat_field_data_id === 'account-number-data-007'}
                     chat_background_color={field_background_color}
                          placeholder="Enter account number"
-                         type="text"
-                         additional_context={{
+                                                  additional_context={{
                            section: 'Bank Details',
                            required: true,
                          }}
@@ -726,7 +702,7 @@ export default function TaxChecklistPage() {
                                <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                                  <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                                    <HazoChat
-                                     receiver_user_id={recipient_user_id}
+                                     chat_group_id="test-chat-group"
                                      reference_id={active_chat_field_data_id}
                                      reference_type=""
                                      title={active_chat_field_name || 'Chat'}
@@ -775,8 +751,7 @@ export default function TaxChecklistPage() {
                     field_id="australian_state"
                     field_data_id="australian-state-data-009"
                     field_name="Australian State"
-                    recipient_user_id={recipient_user_id}
-                    on_chat_click={handle_chat_click}
+                                        on_chat_click={handle_chat_click}
                     has_chat_messages={australian_state_has_messages.has_messages}
                     is_chat_active={active_chat_field_data_id === 'australian-state-data-009'}
                     chat_background_color={field_background_color}
@@ -795,7 +770,7 @@ export default function TaxChecklistPage() {
                           <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                             <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                               <HazoChat
-                                receiver_user_id={recipient_user_id}
+                                chat_group_id="test-chat-group"
                                 reference_id={active_chat_field_data_id}
                                 reference_type=""
                                 title={active_chat_field_name || 'Chat'}
@@ -824,8 +799,7 @@ export default function TaxChecklistPage() {
                     field_id="notes"
                     field_data_id="notes-data-008"
                     field_name="Notes"
-                    recipient_user_id={recipient_user_id}
-                    on_chat_click={handle_chat_click}
+                                        on_chat_click={handle_chat_click}
                     has_chat_messages={notes_has_messages.has_messages}
                     is_chat_active={active_chat_field_data_id === 'notes-data-008'}
                     chat_background_color={field_background_color}
@@ -843,7 +817,7 @@ export default function TaxChecklistPage() {
                           <CardContent className="cls_tax_checklist_chat_content p-0 flex-1 flex flex-col min-h-0">
                             <div className="cls_tax_checklist_chat_wrapper flex-1 min-h-0 w-full">
                               <HazoChat
-                                receiver_user_id={recipient_user_id}
+                                chat_group_id="test-chat-group"
                                 reference_id={active_chat_field_data_id}
                                 reference_type=""
                                 title={active_chat_field_name || 'Chat'}

@@ -23,7 +23,8 @@ export type { HazoCollabFormGroupProps, HazoCollabFormGroupRef } from './hazo_co
 export { DataOkCheckbox } from './data_ok_checkbox.js';
 export type { DataOkCheckboxProps } from './data_ok_checkbox.js';
 
-export { CollabFormDataOkCheckbox } from './hazo_collab_form_base.js';
+export { CollabFormDataOkCheckbox, CollabFormNotesIcon } from './hazo_collab_form_base.js';
+export type { NoteEntry, FileData } from './hazo_collab_form_base.js';
 
 export { HazoCollabFormSet } from './hazo_collab_form_set.js';
 export type { 

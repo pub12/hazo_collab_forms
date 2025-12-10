@@ -766,7 +766,6 @@ export default function InputboxComponentPage() {
           field_data_id={component_props.field_data_id}
           field_name={component_props.field_name}
           placeholder={component_props.placeholder}
-          type={component_props.type}
           has_chat_messages={component_props.has_chat_messages}
           is_chat_active={component_props.is_chat_active}
           data_ok_checked={component_props.data_ok_checked}
@@ -790,8 +789,6 @@ export default function InputboxComponentPage() {
           num_decimals={component_props.num_decimals}
           format_guide={component_props.format_guide}
           format_guide_info={component_props.format_guide_info}
-          hazo_chat_receiver_user_id={component_props.hazo_chat_receiver_user_id}
-          recipient_user_id={component_props.recipient_user_id}
           hazo_chat_reference_id={component_props.hazo_chat_reference_id}
           hazo_chat_reference_type={component_props.hazo_chat_reference_type}
           hazo_chat_api_base_url={component_props.hazo_chat_api_base_url}

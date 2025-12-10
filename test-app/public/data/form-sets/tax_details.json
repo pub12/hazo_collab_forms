@@ -17,7 +17,22 @@
         "text_max_len": 9,
         "text_min_len": 9,
         "regex": "^[0-9]{9}$"
-      }
+      },
+      "enable_notes": true,
+      "notes": [
+        {
+          "user": "Test User <test@example.com>",
+          "timestamp": "2024-01-15T10:30:00.000Z",
+          "notes": "Please verify this TFN with the ATO before submission."
+        },
+        {
+          "user": "Admin User <admin@example.com>",
+          "timestamp": "2024-01-16T14:45:00.000Z",
+          "notes": "TFN verified and confirmed correct."
+        }
+      ],
+      "reference_label": "Prior Year",
+      "reference_value": "123456789"
     },
     {
       "id": "australian_resident_status",
@@ -41,7 +56,8 @@
           "label": "No",
           "value": "No"
         }
-      ]
+      ],
+      "reference_value": "Yes"
     }
   ]
 }

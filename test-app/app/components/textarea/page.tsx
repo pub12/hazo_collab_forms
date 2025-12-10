@@ -276,7 +276,6 @@ export default function TextAreaComponentPage() {
           max_files={component_props.max_files}
           file_accept={component_props.file_accept}
           field_width_class_name={component_props.field_width_class_name}
-          hazo_chat_receiver_user_id={default_recipient_user_id}
           value={example_value}
           onChange={(val) => {
             set_example_value(val);

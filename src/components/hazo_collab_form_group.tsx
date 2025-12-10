@@ -13,8 +13,10 @@ import {
   CollabFormFieldLabel,
   CollabFormChatIcon,
   CollabFormFieldError,
+  CollabFormFieldReferenceTag,
   CollabFormDataOkCheckbox,
   CollabFormFileUploadSection,
+  CollabFormNotesIcon,
   type CollabFormFieldBaseProps,
   type FileData,
 } from './hazo_collab_form_base.js';
@@ -204,6 +206,14 @@ export const HazoCollabFormGroup = React.forwardRef<
     file_processor,
     files: controlled_files,
     on_files_change,
+    // Notes props
+    enable_notes,
+    disable_notes,
+    notes,
+    on_notes_change,
+    has_notes,
+    is_notes_active,
+    current_user,
     id,
     // HazoChat props
     hazo_chat_group_id,
@@ -223,6 +233,10 @@ export const HazoCollabFormGroup = React.forwardRef<
     hazo_chat_show_sidebar_toggle,
     hazo_chat_show_delete_button,
     hazo_chat_bubble_radius,
+    // Reference tag props
+    reference_value,
+    reference_label,
+    reference_tag_background_color,
   } = props;
 
   const { field_id_final, handle_chat_icon_click, handle_chat_close, chat_is_open } = use_collab_form_field({
@@ -254,6 +268,7 @@ export const HazoCollabFormGroup = React.forwardRef<
         ...child.props,
         disable_data_ok: true,
         disable_chat: true,
+        disable_notes: true,
       });
     }
 
@@ -271,7 +286,7 @@ export const HazoCollabFormGroup = React.forwardRef<
           label_class_name={label_class_name}
         />
         
-        {/* Group-level actions: Data OK checkbox and chat icon - right-justified */}
+        {/* Group-level actions: Data OK checkbox, notes icon, and chat icon - right-justified */}
         <div className="cls_collab_group_actions flex items-center gap-2 flex-shrink-0" suppressHydrationWarning>
           {/* Data OK checkbox - group level */}
           <CollabFormDataOkCheckbox
@@ -280,6 +295,19 @@ export const HazoCollabFormGroup = React.forwardRef<
             on_data_ok_change={on_data_ok_change}
             editable={data_ok_editable}
           />
+
+          {/* Notes icon - group level, conditionally visible */}
+          {enable_notes && !disable_notes && (
+            <CollabFormNotesIcon
+              label={label}
+              error={error}
+              has_notes={has_notes}
+              notes={notes}
+              on_notes_change={on_notes_change}
+              current_user={current_user}
+              disabled={disable_notes}
+            />
+          )}
 
           {/* Chat icon button - group level */}
           <CollabFormChatIcon
@@ -327,6 +355,13 @@ export const HazoCollabFormGroup = React.forwardRef<
           {/* Cloned children with disabled data ok and chat */}
           {cloned_children}
         </div>
+
+        {/* Reference tag - below input, above error */}
+        <CollabFormFieldReferenceTag
+          reference_value={reference_value}
+          reference_label={reference_label}
+          reference_tag_background_color={reference_tag_background_color}
+        />
 
         {/* Error message */}
         <CollabFormFieldError

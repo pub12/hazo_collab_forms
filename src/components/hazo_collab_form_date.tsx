@@ -13,8 +13,10 @@ import {
   CollabFormFieldLabel,
   CollabFormChatIcon,
   CollabFormFieldError,
+  CollabFormFieldReferenceTag,
   CollabFormDataOkCheckbox,
   CollabFormFileUploadSection,
+  CollabFormNotesIcon,
   type CollabFormFieldBaseProps,
   type FileData,
 } from './hazo_collab_form_base.js';
@@ -179,6 +181,14 @@ export const HazoCollabFormDate = React.forwardRef<
     file_processor,
     files: controlled_files_prop,
     on_files_change,
+    // Notes props
+    enable_notes,
+    disable_notes,
+    notes,
+    on_notes_change,
+    has_notes,
+    is_notes_active,
+    current_user,
     id,
     date_mode = 'single',
     min_date,
@@ -203,6 +213,10 @@ export const HazoCollabFormDate = React.forwardRef<
     hazo_chat_show_sidebar_toggle,
     hazo_chat_show_delete_button,
     hazo_chat_bubble_radius,
+    // Reference tag props
+    reference_value,
+    reference_label,
+    reference_tag_background_color,
   } = props;
 
   const { field_id_final, handle_chat_icon_click, handle_chat_close, chat_is_open, is_chat_disabled } = use_collab_form_field({
@@ -468,6 +482,11 @@ export const HazoCollabFormDate = React.forwardRef<
             </div>
           </div>
         </div>
+        <CollabFormFieldReferenceTag
+          reference_value={reference_value}
+          reference_label={reference_label}
+          reference_tag_background_color={reference_tag_background_color}
+        />
         {error && (
           <CollabFormFieldError
             field_id_final={field_id_final}
@@ -584,7 +603,20 @@ export const HazoCollabFormDate = React.forwardRef<
             editable={data_ok_editable}
           />
         )}
-        
+
+        {/* Notes icon - conditionally visible */}
+        {enable_notes && !disable_notes && (
+          <CollabFormNotesIcon
+            label={label}
+            error={error}
+            has_notes={has_notes}
+            notes={notes}
+            on_notes_change={on_notes_change}
+            current_user={current_user}
+            disabled={disable_notes}
+          />
+        )}
+
         {/* Chat icon button - conditionally visible */}
         {!disable_chat && (
           <CollabFormChatIcon
@@ -598,6 +630,13 @@ export const HazoCollabFormDate = React.forwardRef<
           />
         )}
       </div>
+
+      {/* Reference tag - below input, above error */}
+      <CollabFormFieldReferenceTag
+        reference_value={reference_value}
+        reference_label={reference_label}
+        reference_tag_background_color={reference_tag_background_color}
+      />
 
       {/* Error message */}
       <CollabFormFieldError

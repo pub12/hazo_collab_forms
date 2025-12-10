@@ -237,3 +237,6 @@ echo "  hazo_auth core: hazo_users, hazo_refresh_tokens, hazo_permissions, hazo_
 echo "                  hazo_role_permissions, hazo_user_roles"
 echo "  hazo_auth HRBAC: hazo_scopes_l1 through hazo_scopes_l7, hazo_user_scopes, hazo_scope_labels"
 echo "  hazo_chat v3.0:  hazo_chat_group, hazo_chat_group_users, hazo_chat"
+
+
+

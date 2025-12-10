@@ -5,11 +5,16 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'next/navigation';
-import { HazoCollabFormSet, type FieldsSet } from 'hazo_collab_forms';
+import { HazoCollabFormSet, type FieldsSet, type NoteEntry } from 'hazo_collab_forms';
 import { get_form_set_config } from '@/config/form_sets';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+
+/**
+ * Get localStorage key for notes
+ */
+const get_notes_storage_key = (form_set_id: string) => `hazo_notes_${form_set_id}`;
 
 /**
  * Form Set page component
@@ -17,17 +22,17 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 export default function FormSetPage() {
   const params = useParams();
   const form_set_id = params?.formSetId as string;
-  
+
   const [fields_set, set_fields_set] = useState<FieldsSet | null>(null);
   const [form_data, set_form_data] = useState<Record<string, any>>({});
   const [loading, set_loading] = useState(true);
   const [error, set_error] = useState<string | null>(null);
-  
+
   // Get form set configuration
   const config = form_set_id ? get_form_set_config(form_set_id) : undefined;
-  
+
   /**
-   * Load JSON configuration file
+   * Load JSON configuration file and merge with persisted notes
    */
   useEffect(() => {
     if (!form_set_id || !config) {
@@ -35,22 +40,46 @@ export default function FormSetPage() {
       set_loading(false);
       return;
     }
-    
+
     const load_json = async () => {
       try {
         set_loading(true);
         set_error(null);
-        
+
         // Load JSON file from public directory
         const response = await fetch(config.json_path);
-        
+
         if (!response.ok) {
           throw new Error(`Failed to load form set: ${response.statusText}`);
         }
-        
+
         const data: FieldsSet = await response.json();
+
+        // Load persisted notes from localStorage and merge with field config
+        const storage_key = get_notes_storage_key(form_set_id);
+        const persisted_notes_str = localStorage.getItem(storage_key);
+        if (persisted_notes_str) {
+          try {
+            const persisted_notes: Record<string, NoteEntry[]> = JSON.parse(persisted_notes_str);
+            // Merge persisted notes into field_list
+            const merge_notes = (field_list: any[]) => {
+              field_list.forEach((field) => {
+                if (persisted_notes[field.id]) {
+                  field.notes = persisted_notes[field.id];
+                }
+                if (field.field_type === 'group' && field.sub_fields) {
+                  merge_notes(field.sub_fields);
+                }
+              });
+            };
+            merge_notes(data.field_list);
+          } catch (parse_error) {
+            console.error('Error parsing persisted notes:', parse_error);
+          }
+        }
+
         set_fields_set(data);
-        
+
         // Initialize form data
         const initial_data: Record<string, any> = {};
         const initialize_data = (field_list: any[]) => {
@@ -70,7 +99,7 @@ export default function FormSetPage() {
         set_loading(false);
       }
     };
-    
+
     load_json();
   }, [form_set_id, config]);
   
@@ -80,6 +109,15 @@ export default function FormSetPage() {
   const handle_form_data_change = (data: Record<string, any>) => {
     set_form_data(data);
   };
+
+  /**
+   * Handle notes change - persist to localStorage
+   */
+  const handle_all_notes_change = useCallback((all_notes: Record<string, NoteEntry[]>) => {
+    if (!form_set_id) return;
+    const storage_key = get_notes_storage_key(form_set_id);
+    localStorage.setItem(storage_key, JSON.stringify(all_notes));
+  }, [form_set_id]);
   
   if (loading) {
     return (
@@ -127,6 +165,8 @@ export default function FormSetPage() {
             <HazoCollabFormSet
               fields_set={fields_set}
               on_form_data_change={handle_form_data_change}
+              enable_notes={true}
+              on_all_notes_change={handle_all_notes_change}
             />
           </CardContent>
         </Card>

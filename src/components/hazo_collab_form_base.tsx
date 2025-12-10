@@ -6,7 +6,7 @@
 'use client';
 
 import React from 'react';
-import { IoChatbox } from 'react-icons/io5';
+import { IoChatbox, IoDocumentText } from 'react-icons/io5';
 import { cn } from '../utils/cn.js';
 import { DataOkCheckbox } from './data_ok_checkbox.js';
 import { CollabFormFileUpload } from './collab_form_file_upload.js';
@@ -356,6 +356,73 @@ export interface CollabFormFieldBaseProps {
    * Called with the updated files array
    */
   on_files_change?: (files: FileData[]) => void;
+
+  /**
+   * Whether to enable the notes feature for this field
+   * When true, displays a notes icon next to the chat icon
+   * Default: false
+   */
+  enable_notes?: boolean;
+
+  /**
+   * Whether to disable the notes icon
+   * When true, the notes icon will not be rendered even if enable_notes is true
+   * Useful when notes are handled at a group level
+   */
+  disable_notes?: boolean;
+
+  /**
+   * Array of existing notes for this field
+   * Each note contains user info, timestamp, and note content
+   */
+  notes?: NoteEntry[];
+
+  /**
+   * Callback when notes array changes
+   * Called with the updated notes array after adding a new note
+   */
+  on_notes_change?: (notes: NoteEntry[]) => void;
+
+  /**
+   * Whether this field has any notes
+   * When true, adds visual indicator (amber styling on notes icon)
+   */
+  has_notes?: boolean;
+
+  /**
+   * Whether the notes panel is currently active/open
+   * When true, provides visual feedback (optional, for external control)
+   */
+  is_notes_active?: boolean;
+
+  /**
+   * Current user information for creating new notes
+   * Format: { name: string; email: string }
+   * If not provided, will attempt to fetch from /api/hazo_auth/me
+   */
+  current_user?: {
+    name: string;
+    email: string;
+  };
+
+  /**
+   * Reference value to display in a tag below the field input
+   * If provided, displays in format "reference_label: reference_value" or just "reference_value"
+   */
+  reference_value?: string;
+
+  /**
+   * Reference label to display in a tag below the field input
+   * If provided alone, displays just "reference_label"
+   * If provided with reference_value, displays "reference_label: reference_value"
+   */
+  reference_label?: string;
+
+  /**
+   * Background color class for the reference tag
+   * Default: "bg-muted"
+   */
+  reference_tag_background_color?: string;
 }
 
 /**
@@ -391,6 +458,26 @@ export interface FileData {
    * Upload timestamp
    */
   uploaded_at: Date;
+}
+
+/**
+ * Single note entry structure for field notes
+ */
+export interface NoteEntry {
+  /**
+   * User identifier in "Name <email>" format
+   */
+  user: string;
+
+  /**
+   * ISO timestamp when the note was created
+   */
+  timestamp: string;
+
+  /**
+   * The note content
+   */
+  notes: string;
 }
 
 /**
@@ -770,6 +857,44 @@ export function CollabFormFieldError({
 }
 
 /**
+ * Render the reference tag below the field input
+ * Displays reference_value and/or reference_label in a subdued, tag-like appearance
+ */
+export function CollabFormFieldReferenceTag({
+  reference_value,
+  reference_label,
+  reference_tag_background_color = 'bg-muted',
+}: {
+  reference_value?: string;
+  reference_label?: string;
+  reference_tag_background_color?: string;
+}) {
+  // Don't render if neither value is provided
+  if (!reference_value && !reference_label) {
+    return null;
+  }
+
+  // Determine display text
+  let display_text: string;
+  if (reference_label && reference_value) {
+    display_text = `${reference_label}: ${reference_value}`;
+  } else {
+    display_text = reference_label || reference_value!;
+  }
+
+  return (
+    <div
+      className={cn(
+        'cls_collab_field_reference_tag inline-flex items-center px-2 py-0.5 rounded text-xs text-muted-foreground',
+        reference_tag_background_color
+      )}
+    >
+      {display_text}
+    </div>
+  );
+}
+
+/**
  * Render the data OK checkbox
  * Provides consistent data OK checkbox functionality across all form fields
  */
@@ -873,6 +998,419 @@ export function CollabFormFileUploadSection({
           component_ref={component_ref}
         />
       ) : null}
+    </div>
+  );
+}
+
+/**
+ * Notes panel content displayed in the popover
+ * Shows existing notes (read-only) and textarea for new note
+ * Styled as a sticky note with yellow background
+ */
+function CollabFormNotesPanel({
+  notes,
+  new_note_text,
+  on_new_note_change,
+  effective_user,
+  field_label,
+  ProfileStampComponent,
+}: {
+  notes: NoteEntry[];
+  new_note_text: string;
+  on_new_note_change: (text: string) => void;
+  effective_user: { name: string; email: string; profile_image?: string } | null;
+  field_label: string;
+  ProfileStampComponent?: React.ComponentType<any> | null;
+}) {
+  /**
+   * Format timestamp for display
+   */
+  const format_timestamp = (iso_timestamp: string): string => {
+    try {
+      const date = new Date(iso_timestamp);
+      return date.toLocaleString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+      });
+    } catch {
+      return iso_timestamp;
+    }
+  };
+
+  /**
+   * Parse user string to extract name and email
+   */
+  const parse_user = (user_string: string): { name: string; email: string } => {
+    const match = user_string.match(/^(.+)\s+<(.+)>$/);
+    if (match) {
+      return { name: match[1], email: match[2] };
+    }
+    return { name: user_string, email: '' };
+  };
+
+  /**
+   * Get initials from name for avatar
+   */
+  const get_initials = (name: string): string => {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
+  /**
+   * Generate consistent hex color from name for avatar background
+   */
+  const get_avatar_color = (name: string): string => {
+    const colors = [
+      '#ef4444', '#f97316', '#d97706', '#22c55e',
+      '#14b8a6', '#3b82f6', '#6366f1', '#a855f7',
+      '#ec4899', '#f43f5e'
+    ];
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) {
+      hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return colors[Math.abs(hash) % colors.length];
+  };
+
+  /**
+   * Render avatar - uses ProfileStamp if available, otherwise falls back to initials
+   */
+  const render_avatar = (name: string, timestamp?: string) => {
+    if (ProfileStampComponent) {
+      const custom_fields = timestamp ? [{ label: 'Posted', value: format_timestamp(timestamp) }] : [];
+      return (
+        <ProfileStampComponent
+          size="sm"
+          show_name={false}
+          show_email={false}
+          custom_fields={custom_fields}
+        />
+      );
+    }
+    // Fallback to initials avatar
+    return (
+      <span
+        className="cls_collab_note_avatar"
+        style={{
+          backgroundColor: get_avatar_color(name),
+          color: '#ffffff',
+          width: '28px',
+          height: '28px',
+          borderRadius: '50%',
+          display: 'inline-flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '11px',
+          fontWeight: 'bold',
+          flexShrink: 0,
+        }}
+        title={name}
+      >
+        {get_initials(name)}
+      </span>
+    );
+  };
+
+  return (
+    <div className="cls_collab_notes_panel_content flex flex-col bg-yellow-100 max-h-[400px]">
+      {/* Header - sticky note style */}
+      <div className="cls_collab_notes_panel_header px-4 py-3 border-b border-yellow-300 bg-yellow-200 flex-shrink-0">
+        <h4 className="font-medium text-sm text-yellow-900">{field_label}</h4>
+        <p className="text-xs text-yellow-700 mt-1">
+          {notes.length} note{notes.length !== 1 ? 's' : ''}
+        </p>
+      </div>
+
+      {/* Existing notes (scrollable area) */}
+      <div className="cls_collab_notes_list flex-1 overflow-y-auto bg-yellow-50 min-h-0">
+        {notes.length === 0 ? (
+          <div className="px-4 py-6 text-center text-sm text-yellow-700">
+            No notes yet.
+          </div>
+        ) : (
+          <div className="divide-y divide-yellow-300">
+            {notes.map((note, index) => {
+              const { name } = parse_user(note.user);
+              return (
+                <div key={index} className="cls_collab_note_entry p-3">
+                  {/* Note header: avatar and timestamp */}
+                  <div className="flex items-center gap-2 mb-2">
+                    {/* Profile avatar */}
+                    {render_avatar(name, note.timestamp)}
+                    {!ProfileStampComponent && (
+                      <span className="text-xs text-yellow-700 flex-shrink-0">
+                        {format_timestamp(note.timestamp)}
+                      </span>
+                    )}
+                  </div>
+                  {/* Note content as read-only textarea with yellow-grey background */}
+                  <div className="cls_collab_note_content ml-9">
+                    <textarea
+                      value={note.notes}
+                      readOnly
+                      className="w-full min-h-[60px] rounded-md border border-yellow-400 bg-amber-100 px-3 py-2 text-sm text-yellow-900 resize-none cursor-default"
+                      style={{ backgroundColor: '#d4c896' }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* New note textarea */}
+      <div className="cls_collab_notes_new_note border-t border-yellow-300 px-4 py-3 bg-yellow-100 flex-shrink-0">
+        <div className="flex items-center gap-2 mb-2">
+          {effective_user && (
+            ProfileStampComponent ? (
+              <ProfileStampComponent size="sm" show_name={false} show_email={false} />
+            ) : effective_user.profile_image ? (
+              <img
+                src={effective_user.profile_image}
+                alt={effective_user.name}
+                title={effective_user.name}
+                className="cls_collab_note_avatar"
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  objectFit: 'cover',
+                  flexShrink: 0,
+                }}
+              />
+            ) : (
+              <span
+                className="cls_collab_note_avatar"
+                style={{
+                  backgroundColor: get_avatar_color(effective_user.name),
+                  color: '#ffffff',
+                  width: '28px',
+                  height: '28px',
+                  borderRadius: '50%',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: '11px',
+                  fontWeight: 'bold',
+                  flexShrink: 0,
+                }}
+                title={effective_user.name}
+              >
+                {get_initials(effective_user.name)}
+              </span>
+            )
+          )}
+          <label className="text-xs font-medium text-yellow-800">
+            Add a new note
+          </label>
+        </div>
+        <textarea
+          value={new_note_text}
+          onChange={(e) => on_new_note_change(e.target.value)}
+          className="cls_collab_notes_textarea w-full min-h-[80px] rounded-md border border-yellow-400 bg-white px-3 py-2 text-sm shadow-sm placeholder:text-yellow-500 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-yellow-500 resize-y"
+          disabled={!effective_user}
+        />
+        {!effective_user && (
+          <p className="text-xs text-red-600 mt-1">
+            Please log in to add notes.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Render the notes icon button with popover panel
+ * Similar to CollabFormChatIcon but triggers notes panel
+ */
+export function CollabFormNotesIcon({
+  label,
+  error,
+  has_notes,
+  notes = [],
+  on_notes_change,
+  disabled,
+  current_user,
+}: {
+  label: string;
+  error?: string;
+  has_notes?: boolean;
+  notes?: NoteEntry[];
+  on_notes_change?: (notes: NoteEntry[]) => void;
+  disabled?: boolean;
+  current_user?: { name: string; email: string; profile_image?: string };
+}) {
+  // Don't render if explicitly disabled
+  if (disabled) {
+    return null;
+  }
+
+  // State for popover open/close
+  const [popover_open, set_popover_open] = React.useState(false);
+
+  // State for new note text
+  const [new_note_text, set_new_note_text] = React.useState('');
+
+  // State for fetched user info (if current_user not provided)
+  const [fetched_user, set_fetched_user] = React.useState<{ name: string; email: string; profile_image?: string } | null>(null);
+
+  // Dynamic imports for shadcn Popover
+  const [Components, setComponents] = React.useState<{
+    Popover: React.ComponentType<any>;
+    PopoverTrigger: React.ComponentType<any>;
+    PopoverContent: React.ComponentType<any>;
+  } | null>(null);
+
+  // Dynamic import for ProfileStamp from hazo_auth
+  const [ProfileStampComponent, setProfileStampComponent] = React.useState<React.ComponentType<any> | null>(null);
+
+  // Fetch user info if not provided
+  React.useEffect(() => {
+    if (!current_user) {
+      const fetch_user = async () => {
+        try {
+          const response = await fetch('/api/hazo_auth/me');
+          if (response.ok) {
+            const data = await response.json();
+            if (data.authenticated) {
+              // Support both naming conventions: user_name/user_email and name/email
+              const name = data.user_name || data.name;
+              const email = data.user_email || data.email;
+              const profile_image = data.profile_image || data.avatar_url || data.image;
+              if (name && email) {
+                set_fetched_user({ name, email, profile_image });
+              }
+            }
+          }
+        } catch (error) {
+          console.error('[CollabFormNotesIcon] Error fetching user:', error);
+        }
+      };
+      fetch_user();
+    }
+  }, [current_user]);
+
+  // Load Popover component dynamically
+  React.useEffect(() => {
+    const loadComponents = async () => {
+      try {
+        // @ts-expect-error - These modules are provided by the consuming application
+        const popoverModule = await import('@/components/ui/popover').catch(() => null);
+        if (popoverModule) {
+          setComponents({
+            Popover: popoverModule.Popover,
+            PopoverTrigger: popoverModule.PopoverTrigger,
+            PopoverContent: popoverModule.PopoverContent,
+          });
+        }
+      } catch (error) {
+        console.warn('[CollabFormNotesIcon] Error loading Popover:', error);
+      }
+    };
+    loadComponents();
+  }, []);
+
+  // Load ProfileStamp from hazo_auth dynamically
+  React.useEffect(() => {
+    const loadProfileStamp = async () => {
+      try {
+        // Dynamic import with explicit type casting to avoid TS errors when hazo_auth isn't installed
+        const modulePath = 'hazo_auth/client';
+        const hazoAuthModule = await import(/* webpackIgnore: true */ modulePath).catch(() => null) as Record<string, unknown> | null;
+        if (hazoAuthModule?.ProfileStamp) {
+          setProfileStampComponent(() => hazoAuthModule.ProfileStamp as React.ComponentType<any>);
+        }
+      } catch {
+        // ProfileStamp not available, will fall back to initials
+        console.debug('[CollabFormNotesIcon] ProfileStamp not available, using fallback');
+      }
+    };
+    loadProfileStamp();
+  }, []);
+
+  // Get effective user
+  const effective_user = current_user || fetched_user;
+
+  // Handle save on close
+  const handle_popover_close = (open: boolean) => {
+    if (!open && new_note_text.trim() && effective_user && on_notes_change) {
+      // Create new note entry
+      const new_note: NoteEntry = {
+        user: `${effective_user.name} <${effective_user.email}>`,
+        timestamp: new Date().toISOString(),
+        notes: new_note_text.trim(),
+      };
+
+      // Add to existing notes
+      on_notes_change([...notes, new_note]);
+
+      // Clear the textarea
+      set_new_note_text('');
+    }
+    set_popover_open(open);
+  };
+
+  // Fallback if Popover not available
+  if (!Components) {
+    return (
+      <button
+        type="button"
+        disabled
+        className={cn(
+          'cls_collab_notes_icon flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-muted-foreground opacity-50 cursor-not-allowed'
+        )}
+        aria-label={`Notes for ${label} (unavailable)`}
+        title="Notes unavailable - missing shadcn/ui popover component"
+      >
+        <IoDocumentText className="h-5 w-5" />
+      </button>
+    );
+  }
+
+  const { Popover, PopoverTrigger, PopoverContent } = Components;
+
+  return (
+    <div className="cls_collab_notes_icon_wrapper flex items-center">
+      <Popover open={popover_open} onOpenChange={handle_popover_close}>
+        <PopoverTrigger asChild>
+          <button
+            type="button"
+            className={cn(
+              'cls_collab_notes_icon flex h-9 w-9 items-center justify-center rounded-md border border-input bg-transparent text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring',
+              error && 'border-destructive',
+              has_notes && 'bg-amber-100 border-amber-500'
+            )}
+            aria-label={`Notes for ${label}`}
+            title={`Notes for ${label}`}
+          >
+            <IoDocumentText className={cn("h-5 w-5", has_notes && "text-amber-600")} />
+          </button>
+        </PopoverTrigger>
+        <PopoverContent
+          className="cls_collab_notes_panel w-80 p-0"
+          align="end"
+          side="bottom"
+          sideOffset={5}
+          collisionPadding={16}
+          avoidCollisions={true}
+        >
+          <CollabFormNotesPanel
+            notes={notes}
+            new_note_text={new_note_text}
+            on_new_note_change={set_new_note_text}
+            effective_user={effective_user}
+            field_label={label}
+            ProfileStampComponent={ProfileStampComponent}
+          />
+        </PopoverContent>
+      </Popover>
     </div>
   );
 }

@@ -8,7 +8,7 @@
 import { useState, useRef } from 'react';
 import { ComponentTestTemplate, type PropsTableData } from '@/components/component_test_template';
 import { COMPONENT_PAGES } from '@/config/component_pages';
-import { HazoCollabFormInputbox, HazoCollabFormTextArea, type FileData } from 'hazo_collab_forms';
+import { HazoCollabFormInputbox, HazoCollabFormTextArea, type FileData, type HazoCollabFormInputboxRef, type HazoCollabFormTextAreaRef } from 'hazo_collab_forms';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -21,8 +21,8 @@ export default function FileUploadComponentPage() {
   const [example_files, set_example_files] = useState<FileData[]>([]);
   const [textarea_value, set_textarea_value] = useState('');
   const [textarea_files, set_textarea_files] = useState<FileData[]>([]);
-  const input_ref = useRef<HTMLInputElement & { get_file_data?: () => FileData[] }>(null);
-  const textarea_ref = useRef<HTMLTextAreaElement & { get_file_data?: () => FileData[] }>(null);
+  const input_ref = useRef<HTMLInputElement & HazoCollabFormInputboxRef>(null);
+  const textarea_ref = useRef<HTMLTextAreaElement & HazoCollabFormTextAreaRef>(null);
 
   // Example: File processor callback
   const handle_file_processor = async (file_data: FileData, component_ref: React.RefObject<any>) => {
