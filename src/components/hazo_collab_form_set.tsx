@@ -16,6 +16,7 @@ import { HazoCollabFormCombo, type ComboboxOption } from './hazo_collab_form_com
 import { HazoCollabFormRadio, type RadioOption } from './hazo_collab_form_radio.js';
 import { HazoCollabFormDate } from './hazo_collab_form_date.js';
 import { HazoCollabFormGroup } from './hazo_collab_form_group.js';
+import { HazoCollabFormDataTable, type DataTableConfig, type DataTableRow } from './hazo_collab_form_data_table.js';
 import type { NoteEntry } from './hazo_collab_form_base.js';
 
 /**
@@ -180,6 +181,12 @@ export interface FieldConfig {
    * Default: "bg-muted"
    */
   reference_tag_background_color?: string;
+
+  /**
+   * Table configuration (only for component_type: "HazoCollabFormDataTable")
+   * Defines columns, settings, and behavior for data table fields
+   */
+  table_config?: DataTableConfig;
 }
 
 /**
@@ -289,6 +296,7 @@ const COMPONENT_MAP: Record<string, React.ComponentType<any>> = {
   HazoCollabFormCombo,
   HazoCollabFormRadio,
   HazoCollabFormDate,
+  HazoCollabFormDataTable,
 };
 
 /**
@@ -872,6 +880,27 @@ export const HazoCollabFormSet = React.forwardRef<
           date_mode={field.input_format?.format_guide === 'range' ? 'range' : 'single'}
           min_date={field.input_format?.format_guide === 'range' ? undefined : field.input_format?.format_guide}
           placeholder={field.description}
+        />
+      );
+    }
+
+    if (field.component_type === 'HazoCollabFormDataTable') {
+      // Data table component - supports dynamic columns and inline editing
+      if (!field.table_config) {
+        console.warn(`[HazoCollabFormSet] Missing table_config for data table field: ${field.id}`);
+        return null;
+      }
+
+      // Ensure value is an array
+      const table_value = Array.isArray(current_value) ? current_value : [];
+
+      return (
+        <Component
+          key={field.id}
+          {...base_props}
+          table_config={field.table_config}
+          value={table_value}
+          onChange={(rows: DataTableRow[]) => handle_field_change(field.id, rows)}
         />
       );
     }

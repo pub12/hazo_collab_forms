@@ -1,57 +1,152 @@
 {
-    "group_name": "Deductions",
-    "accept_files": true,
-    "field_list": [
-      {
-        "id": "deductions_section",
-        "label": "Deduction Section",
-        "field_type": "group",
-        "description": "Deductions you are claiming against your income.",
-        "accept_files": true,
-        "sub_fields": [
+  "group_name": "Deductions",
+  "accept_files": true,
+  "field_list": [
+    {
+      "id": "tax_deductions_table",
+      "label": "Tax Deductions",
+      "field_type": "field",
+      "component_type": "HazoCollabFormDataTable",
+      "description": "Enter all your tax deduction items with supporting documentation",
+      "value": [],
+      "enable_notes": true,
+      "table_config": {
+        "columns": [
           {
-            "id": "deduction_d1_work_related_car_expenses",
-            "label": "D1 - Work-Related Car Expenses (AS code)",
-            "component_type": "HazoCollabFormInputbox",
-            "value": "",
-            "field_type": "field",
-            "description": "Expenses incurred for using your own car for work purposes (AS code).",
-            "input_type": "numeric",
-            "accept_files": true,
-            "input_format": {
-              "format_guide": "Total amount in whole dollars",
-              "num_min": 0
+            "id": "deduction_code",
+            "label": "Code",
+            "field_type": "dropdown",
+            "editable": true,
+            "width": "w-40",
+            "options": [
+              { "label": "D1 - Work Car Expenses", "value": "D1" },
+              { "label": "D2 - Work Travel", "value": "D2" },
+              { "label": "D3 - Uniform/Clothing", "value": "D3" },
+              { "label": "D4 - Self-Education", "value": "D4" },
+              { "label": "D5 - Other Work Expenses", "value": "D5" },
+              { "label": "D6 - Low Value Pool", "value": "D6" },
+              { "label": "D7 - Interest Deductions", "value": "D7" },
+              { "label": "D8 - Dividend Deductions", "value": "D8" },
+              { "label": "D9 - Gifts/Donations", "value": "D9" },
+              { "label": "D10 - Tax Agent Fees", "value": "D10" },
+              { "label": "D11 - Forestry", "value": "D11" },
+              { "label": "D12 - Other Deductions", "value": "D12" }
+            ],
+            "constraints": {
+              "required": true
+            },
+            "tooltip": {
+              "enabled": true,
+              "title": "Deduction Code",
+              "content": "Select the ATO deduction category code. D1-D5 are work-related expenses, D9 is for charitable donations, D10 is for tax agent fees."
             }
           },
           {
-            "id": "deduction_d9_gifts_or_donations",
-            "label": "D9 - Gifts or Donations (J code)",
-            "component_type": "HazoCollabFormInputbox",
-            "value": "",
-            "field_type": "field",
-            "description": "Gifts or contributions of $2 or more to approved deductible gift recipients (DGRs) (J code).",
-            "input_type": "numeric",
-            "accept_files": true,
-            "input_format": {
-              "format_guide": "Total amount in whole dollars",
-              "num_min": 0
+            "id": "description",
+            "label": "Description",
+            "field_type": "text",
+            "editable": true,
+            "width": "w-56",
+            "constraints": {
+              "required": true,
+              "length": 200
+            },
+            "tooltip": {
+              "enabled": true,
+              "title": "Description",
+              "content": "Provide a clear description of the expense. Be specific about what it was for and why it is work-related."
             }
           },
           {
-            "id": "total_deductions",
-            "label": "Total Deductions (X code)",
-            "component_type": "HazoCollabFormInputbox",
-            "value": "",
-            "field_type": "field",
-            "description": "The sum of amounts at questions D1 to D (X code).",
-            "input_type": "numeric",
-            "accept_files": false,
-            "input_format": {
-              "format_guide": "Total amount in whole dollars",
-              "num_min": 0
+            "id": "amount",
+            "label": "Amount ($)",
+            "field_type": "numeric",
+            "editable": true,
+            "width": "w-28",
+            "constraints": {
+              "min": 0,
+              "max": 999999.99,
+              "num_decimals": 2,
+              "required": true
+            },
+            "aggregation": {
+              "type": "sum",
+              "label": "Total Deductions"
+            },
+            "tooltip": {
+              "enabled": true,
+              "title": "Amount",
+              "content": "Enter the deduction amount. For work-related expenses under $300, no receipts are required but you must have spent the money."
+            }
+          },
+          {
+            "id": "date_incurred",
+            "label": "Date",
+            "field_type": "text",
+            "editable": true,
+            "width": "w-28",
+            "constraints": {
+              "regex": "^\\d{2}/\\d{2}/\\d{4}$"
+            },
+            "tooltip": {
+              "enabled": true,
+              "title": "Date Incurred",
+              "content": "Enter the date you incurred the expense in DD/MM/YYYY format."
+            }
+          },
+          {
+            "id": "receipts",
+            "label": "Receipts",
+            "field_type": "files",
+            "editable": true,
+            "width": "w-24",
+            "files_config": {
+              "target_path": "/uploads/deductions",
+              "max_files": 5,
+              "file_accept": ".pdf,.jpg,.jpeg,.png"
+            },
+            "tooltip": {
+              "enabled": true,
+              "title": "Receipts",
+              "content": "Upload receipts or proof of purchase. Accepted formats: PDF, JPG, PNG. Max 5 files per item."
+            }
+          },
+          {
+            "id": "verified",
+            "label": "Verified",
+            "field_type": "checkbox",
+            "editable": true,
+            "width": "w-20",
+            "tooltip": {
+              "enabled": true,
+              "content": "Check this box once you have verified this deduction has valid supporting documentation."
             }
           }
-        ]
+        ],
+        "allow_add_row": true,
+        "allow_delete_row": true,
+        "show_row_numbers": true,
+        "show_subtotal_row": true,
+        "empty_message": "No deductions added yet. Click 'Add Row' to add your first tax deduction.",
+        "max_rows": 100,
+        "enable_row_collab": true
       }
-    ]
-  }
+    },
+    {
+      "id": "total_deductions_summary",
+      "label": "Total Deductions (X code)",
+      "component_type": "HazoCollabFormInputbox",
+      "value": "",
+      "field_type": "field",
+      "description": "This will be calculated automatically from the table above",
+      "input_type": "numeric",
+      "accept_files": false,
+      "input_format": {
+        "format_guide": "Total amount calculated from table",
+        "num_min": 0
+      },
+      "reference_label": "Auto-calculated",
+      "reference_tag_background_color": "bg-blue-100"
+    }
+  ]
+}

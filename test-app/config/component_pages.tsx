@@ -5,7 +5,7 @@
  */
 
 import React from 'react';
-import { HiDocumentText, HiPencil, HiChat, HiCheck, HiSelector, HiDotsCircleHorizontal, HiCheckCircle, HiCollection, HiLocationMarker, HiPaperClip, HiCalendar } from 'react-icons/hi';
+import { HiDocumentText, HiPencil, HiChat, HiCheck, HiSelector, HiDotsCircleHorizontal, HiCheckCircle, HiCollection, HiLocationMarker, HiPaperClip, HiCalendar, HiTable } from 'react-icons/hi';
 
 /**
  * Component page configuration
@@ -129,6 +129,14 @@ export const COMPONENT_PAGES: ComponentPageConfig[] = [
     component_name: 'HazoCollabFormDate',
     element_name: 'Collaboration Form Date Picker',
     description: 'A date picker component with collaboration features. Supports both single date and date range selection modes using shadcn Calendar component. Includes label, error handling, chat integration, and data validation support.',
+  },
+  {
+    path: '/components/data-table',
+    title: 'Data Table',
+    icon: () => <HiTable className="h-5 w-5" />,
+    component_name: 'HazoCollabFormDataTable',
+    element_name: 'Collaboration Form Data Table',
+    description: 'A dynamic data table component with inline editing, configurable columns, validation, file uploads, and aggregation support. Supports text, numeric, dropdown, checkbox, radiobutton, and file field types. Includes row-level collaboration features (chat, notes, data-ok).',
   },
 ];
 

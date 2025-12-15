@@ -39,3 +39,20 @@ export type {
 export { HazoCollabFormDate } from './hazo_collab_form_date.js';
 export type { HazoCollabFormDateProps, HazoCollabFormDateRef, DateRangeValue } from './hazo_collab_form_date.js';
 
+export { HazoCollabFormDataTable } from './hazo_collab_form_data_table.js';
+export type {
+  HazoCollabFormDataTableProps,
+  HazoCollabFormDataTableRef,
+  DataTableConfig,
+  DataTableColumn,
+  DataTableRow,
+  DataTableFieldType,
+  DataTableOption,
+  AggregationType,
+  AggregationConfig,
+  HeaderStyling,
+  ColumnConstraints,
+  FilesColumnConfig,
+  TooltipConfig,
+} from './hazo_collab_form_data_table.js';
+
