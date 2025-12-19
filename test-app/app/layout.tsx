@@ -6,6 +6,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { AppLayout } from '@/components/app_layout';
 import { Toaster } from '@/components/ui/sonner';
+import { Providers } from '@/components/providers';
 
 export const metadata: Metadata = {
   title: 'Hazo Collab Forms - Test App',
@@ -20,7 +21,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <AppLayout>{children}</AppLayout>
+        <Providers>
+          <AppLayout>{children}</AppLayout>
+        </Providers>
         <Toaster />
       </body>
     </html>

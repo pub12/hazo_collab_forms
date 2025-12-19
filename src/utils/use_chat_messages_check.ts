@@ -7,6 +7,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { use_logger } from '../logger/context.js';
 
 export interface UseChatMessagesCheckOptions {
   /**
@@ -50,6 +51,7 @@ export function use_chat_messages_check({
   enabled = true,
   poll_interval = 5000,
 }: UseChatMessagesCheckOptions) {
+  const logger = use_logger();
   const [has_messages, set_has_messages] = useState(false);
   const [is_loading, set_is_loading] = useState(false);
 
@@ -96,7 +98,11 @@ export function use_chat_messages_check({
           set_has_messages(false);
         }
       } catch (error) {
-        console.error('[use_chat_messages_check] Error checking messages:', error);
+        logger.error('[use_chat_messages_check] Error checking messages', {
+          error: error instanceof Error ? error.message : String(error),
+          reference_id,
+          chat_group_id,
+        });
         set_has_messages(false);
       } finally {
         set_is_loading(false);

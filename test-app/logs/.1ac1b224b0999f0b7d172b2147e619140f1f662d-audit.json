@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/pubuduabayasiri/LocalDocuments/02.Nextjs/99.lib/hazo_collab_forms/test-app/logs/.1ac1b224b0999f0b7d172b2147e619140f1f662d-audit.json",
+    "files": [
+        {
+            "date": 1766106792042,
+            "name": "/Users/pubuduabayasiri/LocalDocuments/02.Nextjs/99.lib/hazo_collab_forms/test-app/logs/hazo-2025-12-19.log",
+            "hash": "6d54579fe9c8461dbf4fb8d64f564fa66ea16b2431fc6710460bc7c9bc4054e6"
+        }
+    ],
+    "hashType": "sha256"
+}

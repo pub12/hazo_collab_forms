@@ -13,6 +13,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { cn } from '../utils/cn.js';
+import { use_logger } from '../logger/context.js';
 import {
   use_collab_form_field,
   CollabFormFieldContainer,
@@ -216,6 +217,7 @@ export const HazoCollabFormCombo = React.forwardRef<
           reference_tag_background_color,
         } = props;
 
+  const logger = use_logger();
   const [open, set_open] = useState(false);
 
   const { field_id_final, handle_chat_icon_click, handle_chat_close, chat_is_open, is_chat_disabled } = use_collab_form_field({
@@ -312,13 +314,15 @@ export const HazoCollabFormCombo = React.forwardRef<
             ChevronsUpDown: lucideModule.ChevronsUpDown,
           });
         } else {
-          console.warn(
-            '[HazoCollabFormCombo] shadcn Popover, Command, or lucide-react not found. ' +
-            'Please install them: npx shadcn@latest add popover command && npm install lucide-react'
-          );
+          logger.warn('[HazoCollabFormCombo] shadcn components not found', {
+            required: ['popover', 'command', 'lucide-react'],
+            install_command: 'npx shadcn@latest add popover command && npm install lucide-react',
+          });
         }
       } catch (error) {
-        console.warn('[HazoCollabFormCombo] Error loading components:', error);
+        logger.warn('[HazoCollabFormCombo] Error loading components', {
+          error: error instanceof Error ? error.message : String(error),
+        });
       } finally {
         set_is_loading(false);
       }
@@ -598,14 +602,14 @@ export const HazoCollabFormCombo = React.forwardRef<
                       value={option.value}
                       keywords={[option.label]}
                       onSelect={(currentValue: string) => {
-                        console.log('[HazoCollabFormCombo] onSelect called with:', currentValue);
+                        logger.debug('[HazoCollabFormCombo] onSelect called', { value: currentValue });
                         handle_select_by_value(currentValue);
                       }}
                       onClick={(e: React.MouseEvent) => {
                         // Fallback click handler
                         e.preventDefault();
                         e.stopPropagation();
-                        console.log('[HazoCollabFormCombo] onClick called for:', option.value);
+                        logger.debug('[HazoCollabFormCombo] onClick called', { value: option.value });
                         handle_select_by_value(option.value);
                       }}
                       className="cursor-pointer"

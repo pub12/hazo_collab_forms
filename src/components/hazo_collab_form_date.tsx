@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { cn } from '../utils/cn.js';
+import { use_logger } from '../logger/context.js';
 import {
   use_collab_form_field,
   CollabFormFieldContainer,
@@ -219,6 +220,8 @@ export const HazoCollabFormDate = React.forwardRef<
     reference_tag_background_color,
   } = props;
 
+  const logger = use_logger();
+
   const { field_id_final, handle_chat_icon_click, handle_chat_close, chat_is_open, is_chat_disabled } = use_collab_form_field({
     label,
     field_id,
@@ -281,13 +284,15 @@ export const HazoCollabFormDate = React.forwardRef<
             CalendarIcon: lucideModule.CalendarIcon,
           });
         } else {
-          console.warn(
-            '[HazoCollabFormDate] shadcn Popover, Calendar, Button, or lucide-react not found. ' +
-            'Please install them: npx shadcn@latest add popover calendar button && npm install lucide-react'
-          );
+          logger.warn('[HazoCollabFormDate] shadcn components not found', {
+            required: ['popover', 'calendar', 'button', 'lucide-react'],
+            install_command: 'npx shadcn@latest add popover calendar button && npm install lucide-react',
+          });
         }
       } catch (error) {
-        console.warn('[HazoCollabFormDate] Error loading components:', error);
+        logger.warn('[HazoCollabFormDate] Error loading components', {
+          error: error instanceof Error ? error.message : String(error),
+        });
       } finally {
         set_is_loading(false);
       }

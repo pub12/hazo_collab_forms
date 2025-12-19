@@ -10,6 +10,7 @@ import React from 'react';
 import { HiPlus, HiTrash, HiQuestionMarkCircle, HiX } from 'react-icons/hi';
 import { IoDocumentAttachOutline } from 'react-icons/io5';
 import { cn } from '../utils/cn.js';
+import { use_logger } from '../logger/context.js';
 import {
   use_collab_form_field,
   CollabFormFieldContainer,
@@ -850,6 +851,7 @@ function ColumnTooltip({
 }: {
   tooltip: TooltipConfig;
 }) {
+  const logger = use_logger();
   const [HoverCardComponents, setHoverCardComponents] = React.useState<{
     HoverCard: React.ComponentType<any>;
     HoverCardTrigger: React.ComponentType<any>;
@@ -869,7 +871,9 @@ function ColumnTooltip({
           });
         }
       } catch (error) {
-        console.warn('[ColumnTooltip] Error loading HoverCard:', error);
+        logger.warn('[ColumnTooltip] Error loading HoverCard', {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     };
     loadComponents();
@@ -972,6 +976,8 @@ export const HazoCollabFormDataTable = React.forwardRef<
     on_row_notes_change,
   } = props;
 
+  const logger = use_logger();
+
   // Initialize rows with empty array if undefined
   const rows = value || [];
 
@@ -1024,7 +1030,9 @@ export const HazoCollabFormDataTable = React.forwardRef<
             setHazoChatComponent(() => module.HazoChat);
           }
         } catch (error) {
-          console.warn('[HazoCollabFormDataTable] HazoChat not available:', error);
+          logger.warn('[HazoCollabFormDataTable] HazoChat not available', {
+            error: error instanceof Error ? error.message : String(error),
+          });
         }
       };
       loadHazoChat();

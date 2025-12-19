@@ -75,6 +75,7 @@
     "@radix-ui/react-dialog": "^1.0.0",
     "@radix-ui/react-label": "^2.0.0",
     "hazo_chat": "^3.0.0",
+    "hazo_logs": "^1.0.0",
     "lucide-react": ">=0.344.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
@@ -83,6 +84,9 @@
   },
   "peerDependenciesMeta": {
     "lucide-react": {
+      "optional": true
+    },
+    "hazo_logs": {
       "optional": true
     }
   }

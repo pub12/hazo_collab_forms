@@ -30,6 +30,7 @@
     "hazo_chat": "^3.2.0",
     "hazo_collab_forms": "file:..",
     "hazo_config": "^1.0.0",
+    "hazo_logs": "^1.0.0",
     "hazo_connect": "^2.3.1",
     "hazo_ui": "^2.1.2",
     "lucide-react": "^0.555.0",

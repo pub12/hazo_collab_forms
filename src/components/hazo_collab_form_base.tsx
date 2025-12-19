@@ -8,6 +8,7 @@
 import React from 'react';
 import { IoChatbox, IoDocumentText } from 'react-icons/io5';
 import { cn } from '../utils/cn.js';
+import { use_logger } from '../logger/context.js';
 import { DataOkCheckbox } from './data_ok_checkbox.js';
 import { CollabFormFileUpload } from './collab_form_file_upload.js';
 import { HazoChat } from 'hazo_chat';
@@ -1247,6 +1248,8 @@ export function CollabFormNotesIcon({
   disabled?: boolean;
   current_user?: { name: string; email: string; profile_image?: string };
 }) {
+  const logger = use_logger();
+
   // Don't render if explicitly disabled
   if (disabled) {
     return null;
@@ -1290,7 +1293,9 @@ export function CollabFormNotesIcon({
             }
           }
         } catch (error) {
-          console.error('[CollabFormNotesIcon] Error fetching user:', error);
+          logger.error('[CollabFormNotesIcon] Error fetching user', {
+            error: error instanceof Error ? error.message : String(error),
+          });
         }
       };
       fetch_user();
@@ -1311,7 +1316,9 @@ export function CollabFormNotesIcon({
           });
         }
       } catch (error) {
-        console.warn('[CollabFormNotesIcon] Error loading Popover:', error);
+        logger.warn('[CollabFormNotesIcon] Error loading Popover', {
+          error: error instanceof Error ? error.message : String(error),
+        });
       }
     };
     loadComponents();
@@ -1329,7 +1336,7 @@ export function CollabFormNotesIcon({
         }
       } catch {
         // ProfileStamp not available, will fall back to initials
-        console.debug('[CollabFormNotesIcon] ProfileStamp not available, using fallback');
+        logger.debug('[CollabFormNotesIcon] ProfileStamp not available, using fallback');
       }
     };
     loadProfileStamp();

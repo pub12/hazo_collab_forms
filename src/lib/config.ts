@@ -10,6 +10,7 @@ import { HazoConfig } from 'hazo_config';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { existsSync } from 'fs';
+import { get_server_logger } from '../logger/server.js';
 
 // Get the directory of the current module
 const __filename = fileURLToPath(import.meta.url);
@@ -51,14 +52,11 @@ function get_config_instance(): HazoConfig | null {
     // Only warn once to avoid log spam
     if (!config_missing_warned) {
       config_missing_warned = true;
-      console.warn(
-        `[hazo_collab_forms] Config file not found. Searched locations:\n` +
-        `  1. ${app_root_config}\n` +
-        `  2. ${package_root_config}\n\n` +
-        `To create a config file, copy the template:\n` +
-        `  cp node_modules/hazo_collab_forms/templates/${CONFIG_FILE_NAME} ./\n\n` +
-        `Or run: npx hazo-collab-forms-verify to check your setup.`
-      );
+      get_server_logger().warn('[hazo_collab_forms] Config file not found', {
+        searched_locations: [app_root_config, package_root_config],
+        hint: `Copy template: cp node_modules/hazo_collab_forms/templates/${CONFIG_FILE_NAME} ./`,
+        verify_command: 'npx hazo-collab-forms-verify',
+      });
     }
     return null;
   }
@@ -85,10 +83,11 @@ export function get_config(section: string, key: string): string | undefined {
     }
     return config.get(section, key);
   } catch (error) {
-    console.error(
-      `[hazo_collab_forms] Error reading config [${section}].${key}:`,
-      error instanceof Error ? error.message : error
-    );
+    get_server_logger().error('[hazo_collab_forms] Error reading config', {
+      section,
+      key,
+      error: error instanceof Error ? error.message : String(error),
+    });
     return undefined;
   }
 }

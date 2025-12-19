@@ -7,6 +7,7 @@
 
 import React, { useRef, useState, useCallback } from 'react';
 import { cn } from '../utils/cn.js';
+import { use_logger } from '../logger/context.js';
 import type { FileData } from './hazo_collab_form_base.js';
 import { HiTrash, HiPaperClip, HiPhotograph, HiDocument, HiDocumentText, HiCheckCircle } from 'react-icons/hi';
 import { FaSpinner } from 'react-icons/fa';
@@ -482,6 +483,7 @@ function FileUploadAccordion({
   format_file_size: (bytes: number) => string;
   max_files: number;
 }) {
+  const logger = use_logger();
   const [AccordionComponents, set_accordion_components] = React.useState<{
     Accordion: any;
     AccordionItem: any;
@@ -517,13 +519,14 @@ function FileUploadAccordion({
             AccordionContent: accordion_module.AccordionContent,
           });
         } else {
-          console.warn(
-            '[CollabFormFileUpload] shadcn Accordion not found. ' +
-            'Please install it: npx shadcn@latest add accordion'
-          );
+          logger.warn('[CollabFormFileUpload] shadcn Accordion not found', {
+            install_command: 'npx shadcn@latest add accordion',
+          });
         }
       } catch (error) {
-        console.warn('[CollabFormFileUpload] Error loading accordion components:', error);
+        logger.warn('[CollabFormFileUpload] Error loading accordion components', {
+          error: error instanceof Error ? error.message : String(error),
+        });
       } finally {
         set_is_loading(false);
       }

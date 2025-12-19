@@ -1,4 +1,5 @@
 import type { Config } from 'tailwindcss';
+import { tailwindSafelist, tailwindContentPath } from 'hazo_logs/tailwind';
 
 const config: Config = {
     darkMode: ['class'],
@@ -9,7 +10,10 @@ const config: Config = {
     // Scan hazo_chat package for Tailwind classes
     './node_modules/hazo_chat/dist/**/*.{js,ts,jsx,tsx}',
     '../node_modules/hazo_chat/dist/**/*.{js,ts,jsx,tsx}',
+    // Scan hazo_logs package for Tailwind classes
+    tailwindContentPath,
   ],
+  safelist: tailwindSafelist,
   theme: {
   	extend: {
   		borderRadius: {
