@@ -259,6 +259,13 @@ export interface HazoCollabFormSetProps {
    * Use this to get all notes when any field's notes change
    */
   on_all_notes_change?: (all_notes: Record<string, NoteEntry[]>) => void;
+
+  /**
+   * Chat realtime mode for hazo_chat polling behavior
+   * - 'polling': (default) Automatically poll for new messages every 5 seconds
+   * - 'manual': Disable automatic polling, useful when using websockets or manual refresh
+   */
+  chat_realtime_mode?: 'polling' | 'manual';
 }
 
 /**
@@ -361,7 +368,7 @@ export const HazoCollabFormSet = React.forwardRef<
   HazoCollabFormSetRef,
   HazoCollabFormSetProps
 >((props, ref) => {
-  const { fields_set, chat_group_id: chat_group_id_prop, on_field_change, on_form_data_change, initial_data, enable_notes: enable_notes_prop, on_notes_change: on_notes_change_prop, on_all_notes_change } = props;
+  const { fields_set, chat_group_id: chat_group_id_prop, on_field_change, on_form_data_change, initial_data, enable_notes: enable_notes_prop, on_notes_change: on_notes_change_prop, on_all_notes_change, chat_realtime_mode } = props;
 
   const logger = use_logger();
 
@@ -645,12 +652,15 @@ export const HazoCollabFormSet = React.forwardRef<
     check_unread_messages();
 
     // Set up polling to check for unread messages every 5 seconds
-    const interval_id = setInterval(check_unread_messages, 5000);
+    // Only poll if chat_realtime_mode is not 'manual'
+    if (chat_realtime_mode !== 'manual') {
+      const interval_id = setInterval(check_unread_messages, 5000);
 
-    return () => {
-      clearInterval(interval_id);
-    };
-  }, [current_user_id, chat_group_id, fields_set.field_list]);
+      return () => {
+        clearInterval(interval_id);
+      };
+    }
+  }, [current_user_id, chat_group_id, fields_set.field_list, chat_realtime_mode]);
   
   // Initialize form data from field config or initial_data
   const initial_form_data = React.useMemo(() => {
@@ -756,6 +766,7 @@ export const HazoCollabFormSet = React.forwardRef<
           field_name={field.label}
           accept_files={field.accept_files ?? fields_set.accept_files}
           hazo_chat_group_id={chat_group_id}
+          hazo_chat_realtime_mode={chat_realtime_mode}
           has_chat_messages={field_chat_messages[field.id] || false}
           enable_notes={field.enable_notes ?? enable_notes_prop}
           notes={field_notes[field.id] || []}
@@ -800,6 +811,7 @@ export const HazoCollabFormSet = React.forwardRef<
       field_data_id: field.id,
       field_name: field.label,
       hazo_chat_group_id: chat_group_id,
+      hazo_chat_realtime_mode: chat_realtime_mode,
       accept_files: field.accept_files ?? fields_set.accept_files,
       field_width_class_name,
       required: is_required,
