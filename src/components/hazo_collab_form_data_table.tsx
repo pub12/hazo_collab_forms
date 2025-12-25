@@ -1405,7 +1405,7 @@ export const HazoCollabFormDataTable = React.forwardRef<
           {/* Body */}
           <tbody>
             {rows.length === 0 ? (
-              <tr>
+              <tr key="empty-message">
                 <td
                   colSpan={
                     columns.length +
@@ -1533,7 +1533,7 @@ export const HazoCollabFormDataTable = React.forwardRef<
 
             {/* Subtotal row */}
             {show_subtotal_row && rows.length > 0 && (
-              <tr className="cls_data_table_subtotal_row bg-muted/50 font-medium">
+              <tr key="subtotal-row" className="cls_data_table_subtotal_row bg-muted/50 font-medium">
                 {/* Row number cell (empty) */}
                 {show_row_numbers && <td className="px-2 py-2" />}
 

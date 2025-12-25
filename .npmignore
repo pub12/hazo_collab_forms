@@ -1,0 +1,44 @@
+# Development files
+src/
+test-app/
+*.test.ts
+*.test.tsx
+*.spec.ts
+*.spec.tsx
+__tests__/
+
+# Build configuration
+tsconfig.json
+tsconfig.build.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Documentation source
+techdoc.md
+
+# Git
+.git/
+.gitignore
+
+# Other
+.DS_Store
+node_modules/
+*.md.backup
+CLAUDE.md
+SETUP_CHECKLIST.md
