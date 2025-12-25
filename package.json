@@ -1,6 +1,6 @@
 {
   "name": "hazo_collab_forms",
-  "version": "1.3.2",
+  "version": "1.3.3",
   "description": "Collaboration form elements",
   "type": "module",
   "main": "./dist/index.js",
