@@ -473,6 +473,28 @@ export default function DateComponentPage() {
       category: 'Controllable Element',
       description: 'Placeholder text for the date picker button',
     },
+    {
+      name: 'caption_layout',
+      type: "'label' | 'dropdown' | 'dropdown-months' | 'dropdown-years'",
+      required: false,
+      category: 'Controllable Element',
+      description: 'Caption layout for calendar navigation. "dropdown" enables month/year dropdowns for quick selection (recommended for date of birth). Default: "dropdown"',
+      default_value: 'dropdown',
+    },
+    {
+      name: 'start_month',
+      type: 'Date | string | undefined',
+      required: false,
+      category: 'Input Field',
+      description: 'Start month for dropdown navigation (earliest selectable year/month). Format: Date object or ISO string (e.g., "1900-01-01"). Default: 100 years ago',
+    },
+    {
+      name: 'end_month',
+      type: 'Date | string | undefined',
+      required: false,
+      category: 'Input Field',
+      description: 'End month for dropdown navigation (latest selectable year/month). Format: Date object or ISO string. Default: current date',
+    },
   ];
 
   const props_table_data = [...base_props, ...date_props];
@@ -621,6 +643,16 @@ export default function DateComponentPage() {
     if (prop_values.hazo_chat_is_open !== undefined) {
       component_props.hazo_chat_is_open = prop_values.hazo_chat_is_open === true || prop_values.hazo_chat_is_open === 'true';
     }
+    // Caption layout and month range props
+    if (prop_values.caption_layout !== undefined && prop_values.caption_layout !== '') {
+      component_props.caption_layout = prop_values.caption_layout;
+    }
+    if (prop_values.start_month !== undefined && prop_values.start_month !== '') {
+      component_props.start_month = prop_values.start_month;
+    }
+    if (prop_values.end_month !== undefined && prop_values.end_month !== '') {
+      component_props.end_month = prop_values.end_month;
+    }
 
     // Determine date mode
     const current_date_mode = component_props.date_mode || 'single';
@@ -653,6 +685,9 @@ export default function DateComponentPage() {
           min_date={component_props.min_date}
           max_date={component_props.max_date}
           disabled_dates={component_props.disabled_dates}
+          caption_layout={component_props.caption_layout}
+          start_month={component_props.start_month}
+          end_month={component_props.end_month}
           has_chat_messages={component_props.has_chat_messages}
           is_chat_active={component_props.is_chat_active}
           data_ok_checked={component_props.data_ok_checked}

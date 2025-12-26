@@ -73,11 +73,36 @@ export interface HazoCollabFormDateProps extends CollabFormFieldBaseProps {
    * Custom className for the date picker wrapper
    */
   date_wrapper_class_name?: string;
-  
+
   /**
    * Placeholder text for the date picker button
    */
   placeholder?: string;
+
+  /**
+   * Caption layout for the calendar navigation
+   * - 'label': Default text display of month/year
+   * - 'dropdown': Month and year dropdowns (recommended for date of birth)
+   * - 'dropdown-months': Month dropdown only
+   * - 'dropdown-years': Year dropdown only
+   * Default: 'dropdown' (allows quick year/month selection)
+   */
+  caption_layout?: 'label' | 'dropdown' | 'dropdown-months' | 'dropdown-years';
+
+  /**
+   * Start month for the calendar navigation (defines earliest selectable month/year)
+   * Required when using dropdown caption_layout for date of birth fields
+   * Format: Date object or ISO date string (e.g., '1900-01-01')
+   */
+  start_month?: Date | string;
+
+  /**
+   * End month for the calendar navigation (defines latest selectable month/year)
+   * Required when using dropdown caption_layout
+   * Format: Date object or ISO date string (e.g., '2030-12-31')
+   * Defaults to current date + 1 year if not specified
+   */
+  end_month?: Date | string;
 }
 
 /**
@@ -196,6 +221,9 @@ export const HazoCollabFormDate = React.forwardRef<
     max_date,
     disabled_dates,
     placeholder,
+    caption_layout = 'dropdown',
+    start_month,
+    end_month,
     // HazoChat props
     hazo_chat_group_id,
     hazo_chat_reference_id,
@@ -330,6 +358,26 @@ export const HazoCollabFormDate = React.forwardRef<
    */
   const min_date_obj = React.useMemo(() => iso_string_to_date(min_date), [min_date]);
   const max_date_obj = React.useMemo(() => iso_string_to_date(max_date), [max_date]);
+
+  /**
+   * Get start_month and end_month as Date objects for dropdown navigation
+   * Defaults: start_month = 100 years ago, end_month = current date
+   */
+  const start_month_obj = React.useMemo(() => {
+    if (start_month instanceof Date) return start_month;
+    if (typeof start_month === 'string') return iso_string_to_date(start_month);
+    // Default: 100 years ago (useful for date of birth)
+    const default_start = new Date();
+    default_start.setFullYear(default_start.getFullYear() - 100);
+    return default_start;
+  }, [start_month]);
+
+  const end_month_obj = React.useMemo(() => {
+    if (end_month instanceof Date) return end_month;
+    if (typeof end_month === 'string') return iso_string_to_date(end_month);
+    // Default: current date (useful for date of birth)
+    return new Date();
+  }, [end_month]);
 
   /**
    * Handle date selection from Calendar
@@ -572,10 +620,13 @@ export const HazoCollabFormDate = React.forwardRef<
                 mode={date_mode}
                 selected={get_calendar_date}
                 onSelect={handle_date_select}
+                captionLayout={caption_layout}
+                startMonth={start_month_obj}
+                endMonth={end_month_obj}
                 disabled={(date: Date) => {
                   // Normalize date to midnight for accurate comparison
                   const normalized_date = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-                  
+
                   // Check if date is before min_date
                   if (min_date_obj) {
                     const normalized_min = new Date(min_date_obj.getFullYear(), min_date_obj.getMonth(), min_date_obj.getDate());
